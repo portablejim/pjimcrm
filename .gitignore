@@ -3,5 +3,3 @@
 .venv
 *.pyc
 db.sqlite3
-
-pjimmanage/settings.py
