@@ -11,19 +11,26 @@ class Client(models.Model):
     payment_allowance = models.IntegerField("Payment Allowance (days)")
     pay_rate = models.DecimalField("Pay Rate", decimal_places=2, max_digits=10)
     payment_terms = models.TextField("Payment Terms")
+    created_date = models.DateTimeField("Created Date", auto_now_add=True)
+    modified_date = models.DateTimeField("Modified Date", auto_now=True)
 
 class Project(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     name = models.CharField("Name")
     description = models.CharField("Description")
     is_active = models.BooleanField("Is Active", default=True)
+    created_date = models.DateTimeField("Created Date", auto_now_add=True)
+    modified_date = models.DateTimeField("Modified Date", auto_now=True)
 
 class Invoice(models.Model):
     invoice_num = models.CharField("Invoice #", unique=True)
+    invoice_uuid = models.UUIDField("UUID")
     gen_date = models.DateField("Date", default=date_mod.today)
     pay_date = models.DateField("Due Date")
     payment_terms = models.TextField("Payment Terms")
     is_paid = models.BooleanField("Paid")
+    created_date = models.DateTimeField("Created Date", auto_now_add=True)
+    modified_date = models.DateTimeField("Modified Date", auto_now=True)
 
 class InvoiceLine(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
@@ -32,18 +39,23 @@ class InvoiceLine(models.Model):
     price = models.DecimalField("Rate/hr", decimal_places=2, max_digits=10)
     quantity = models.DecimalField("Hours", decimal_places=3, max_digits=10)
     total = models.DecimalField("Total", decimal_places=2, max_digits=10)
+    created_date = models.DateTimeField("Created Date", auto_now_add=True)
+    modified_date = models.DateTimeField("Modified Date", auto_now=True)
 
 class TimesheetEntry(models.Model):
     target_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     project = models.ForeignKey(Project, on_delete=models.RESTRICT)
     description = models.CharField("Description")
     description_set = models.BooleanField("Description has been set")
-    time_seconds = models.IntegerField("Length (seconds)")
+    length_raw = models.DurationField("Length (raw)")
+    length_rounded = models.DurationField("Length (rounded)")
     timestamp_started = models.DateTimeField("Time Started")
     timestamp_stopped = models.DateTimeField("Time Stopped")
     timestamp_started_old = models.DateTimeField("Previously Started")
     timestamp_stopped_old = models.DateTimeField("Previously Stopped")
     is_invoiced = models.BooleanField("Invoiced")
     invoice_reference = models.ForeignKey(Invoice, on_delete=models.SET_NULL, null=True, blank=True)
+    created_date = models.DateTimeField("Created Date", auto_now_add=True)
+    modified_date = models.DateTimeField("Modified Date", auto_now=True)
 
 
