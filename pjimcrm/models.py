@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-from datetime import date as date_mod
+from datetime import date as date_mod, timedelta
 import uuid
 
 # Create your models here.
@@ -48,12 +48,12 @@ class TimesheetEntry(models.Model):
     project = models.ForeignKey(Project, on_delete=models.RESTRICT)
     description = models.CharField("Description")
     description_set = models.BooleanField("Description has been set")
-    length_raw = models.DurationField("Length (raw)")
-    length_rounded = models.DurationField("Length (rounded)")
-    timestamp_started = models.DateTimeField("Time Started")
-    timestamp_stopped = models.DateTimeField("Time Stopped")
-    timestamp_started_old = models.DateTimeField("Previously Started")
-    timestamp_stopped_old = models.DateTimeField("Previously Stopped")
+    length_raw = models.DurationField("Length (raw)", default=timedelta())
+    length_rounded = models.DurationField("Length (rounded)", default=timedelta())
+    timestamp_started = models.DateTimeField("Time Started", null=True, blank=True)
+    timestamp_stopped = models.DateTimeField("Time Stopped", null=True, blank=True)
+    timestamp_started_old = models.DateTimeField("Previously Started", null=True, blank=True)
+    timestamp_stopped_old = models.DateTimeField("Previously Stopped", null=True, blank=True)
     is_invoiced = models.BooleanField("Invoiced")
     invoice_reference = models.ForeignKey(Invoice, on_delete=models.SET_NULL, null=True, blank=True)
     created_date = models.DateTimeField("Created Date", auto_now_add=True)
