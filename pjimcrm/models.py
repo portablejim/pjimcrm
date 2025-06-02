@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from datetime import date as date_mod
+import uuid
 
 # Create your models here.
 class Client(models.Model):
@@ -24,7 +25,7 @@ class Project(models.Model):
 
 class Invoice(models.Model):
     invoice_num = models.CharField("Invoice #", unique=True)
-    invoice_uuid = models.UUIDField("UUID")
+    invoice_uuid = models.UUIDField("UUID", default=uuid.uuid4())
     gen_date = models.DateField("Date", default=date_mod.today)
     pay_date = models.DateField("Due Date")
     payment_terms = models.TextField("Payment Terms")
