@@ -15,6 +15,9 @@ class Client(models.Model):
     created_date = models.DateTimeField("Created Date", auto_now_add=True)
     modified_date = models.DateTimeField("Modified Date", auto_now=True)
 
+    def __str__(self):
+        return self.name + "(" + self.abn + ")"
+
 class Project(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     name = models.CharField("Name")
@@ -22,6 +25,9 @@ class Project(models.Model):
     is_active = models.BooleanField("Is Active", default=True)
     created_date = models.DateTimeField("Created Date", auto_now_add=True)
     modified_date = models.DateTimeField("Modified Date", auto_now=True)
+
+    def __str__(self):
+        return self.name + "(" + self.client.name + ")"
 
 class Invoice(models.Model):
     invoice_num = models.CharField("Invoice #", unique=True)
@@ -33,6 +39,9 @@ class Invoice(models.Model):
     created_date = models.DateTimeField("Created Date", auto_now_add=True)
     modified_date = models.DateTimeField("Modified Date", auto_now=True)
 
+    def __str__(self):
+        return "Invoice #" + self.invoice_num
+
 class InvoiceLine(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
     description = models.CharField("Description")
@@ -42,6 +51,9 @@ class InvoiceLine(models.Model):
     total = models.DecimalField("Total", decimal_places=2, max_digits=10)
     created_date = models.DateTimeField("Created Date", auto_now_add=True)
     modified_date = models.DateTimeField("Modified Date", auto_now=True)
+
+    def __str__(self):
+        return "Line Item #" + self.invoice.invoice_num + ": " + self.description
 
 class TimesheetEntry(models.Model):
     target_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
@@ -58,5 +70,8 @@ class TimesheetEntry(models.Model):
     invoice_reference = models.ForeignKey(Invoice, on_delete=models.SET_NULL, null=True, blank=True)
     created_date = models.DateTimeField("Created Date", auto_now_add=True)
     modified_date = models.DateTimeField("Modified Date", auto_now=True)
+
+    def __str__(self):
+        return "Timesheet Entry" + self.description
 
 
