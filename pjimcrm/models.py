@@ -8,7 +8,7 @@ class Client(models.Model):
     name = models.CharField("Name", max_length=400)
     abn = models.CharField("ABN", max_length=15)
     email = models.EmailField("Email")
-    address = models.TextField("Address")
+    address = models.TextField("Address", blank=True)
     payment_allowance = models.IntegerField("Payment Allowance (days)")
     pay_rate = models.DecimalField("Pay Rate", decimal_places=2, max_digits=10)
     payment_terms = models.TextField("Payment Terms")
