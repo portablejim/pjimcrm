@@ -31,6 +31,7 @@ class Project(models.Model):
 
 class Invoice(models.Model):
     invoice_num = models.CharField("Invoice #", unique=True)
+    client = models.ForeignKey(Client, on_delete=models.RESTRICT)
     invoice_uuid = models.UUIDField("UUID", default=uuid.uuid4())
     gen_date = models.DateField("Date", default=date_mod.today)
     pay_date = models.DateField("Due Date")
@@ -40,7 +41,7 @@ class Invoice(models.Model):
     modified_date = models.DateTimeField("Modified Date", auto_now=True)
 
     def __str__(self):
-        return "Invoice #" + self.invoice_num
+        return "Invoice #" + self.invoice_num + " (" + self.client.name + ")"
 
 class InvoiceLine(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
