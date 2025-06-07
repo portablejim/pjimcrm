@@ -10,5 +10,5 @@ urlpatterns = [
     path("client/<int:client_id>/project/<int:project_id>/edit", views.project_edit, name="project_edit"),
     path("client/<int:client_id>/invoice/<int:invoice_id>/", views.invoice_detail, name="invoice_detail"),
     path("client/<int:client_id>/build-invoice", views.invoice_build, name="invoice_build"),
-    path("timer/", views.invoice_build, name="invoice_build"),
+    path("timer/", views.timer_index, name="invoice_build"),
 ]

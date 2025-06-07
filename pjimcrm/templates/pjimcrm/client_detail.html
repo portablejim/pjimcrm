@@ -1,0 +1,21 @@
+{% extends "pjimcrm/base.html" %}
+
+{% block page_title %}{{ client_record.name }} [Client] - PJim CRM Home{% endblock %}
+{% block content %}
+<div>
+    <a href="{% url 'index' %}">Back</a>
+    <h1>PJim CRM</h1>
+    <div>
+        <h2>Projects</h2>
+        {% if project_list %}
+            <ul>
+            {% for project_record in project_list %}
+                <li><a href="{% url 'project_detail' client_record.id project_record.id %}">{{ project_record.name }}</a></li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No projects</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
