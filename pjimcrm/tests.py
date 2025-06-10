@@ -2,6 +2,7 @@ import datetime
 
 from django.conf import settings
 from django.test import TestCase
+from django.urls import reverse
 from django.utils import timezone
 
 from .models import Client,Project,TimesheetEntry
@@ -31,4 +32,8 @@ class TimesheetModelTests(TestCase):
         self.assertEqual(datetime.timedelta(minutes=15), testTimesheetEntry.length_rounde, "On stopping, the rounded length should be set.")
         self.assertEqual(time1, testTimesheetEntry.timestamp_started_old, "On stopping, the start time should be in the old fields.")
         self.assertEqual(time2, testTimesheetEntry.timestamp_stopped_old, "On stopping, the start time should be in the old fields.")
+
+    def test_timer_index(self):
+        response = self.client.get(reverse("timer_index"))
+        self.assertEqual(200, response.status_code)
 
