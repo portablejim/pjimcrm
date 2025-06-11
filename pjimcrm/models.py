@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from datetime import date as date_mod, timedelta
+import math
 import uuid
 
 # Create your models here.
@@ -74,5 +75,31 @@ class TimesheetEntry(models.Model):
 
     def __str__(self):
         return "Timesheet Entry" + self.description
+
+    def save(self, **kwargs):
+        if self.timestamp_started is not None and self.timestamp_stopped is not None:
+            # Both timestamp fields set.
+            new_timedelta = timedelta()
+            if self.length_raw is not None and self.length_raw > timedelta():
+                new_timedelta += self.length_raw
+            if self.timestamp_stopped > self.timestamp_started:
+                new_timedelta += (self.timestamp_stopped - self.timestamp_started)
+            
+            # Round to second.
+            new_timedelta = timedelta(seconds=new_timedelta.seconds)
+
+            self.length_raw = new_timedelta
+
+            raw_minute_fraction = (new_timedelta.seconds / 60) / 15
+            rounded_minute_fraction= math.ceil(raw_minute_fraction)
+            minutes_difference = (rounded_minute_fraction * 15) - (self.length_raw.seconds / 60)
+            self.length_rounded = self.length_raw + timedelta(seconds=minutes_difference * 60)
+            
+
+            self.timestamp_started_old = self.timestamp_started
+            self.timestamp_stopped_old = self.timestamp_stopped
+            self.timestamp_started = None
+            self.timestamp_stopped = None
+        return super().save(**kwargs)
 
 
