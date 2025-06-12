@@ -10,7 +10,7 @@ class Client(models.Model):
     abn = models.CharField("ABN", max_length=15)
     email = models.EmailField("Email")
     address = models.TextField("Address", blank=True)
-    payment_allowance = models.IntegerField("Payment Allowance (days)")
+    payment_allowance = models.PositiveSmallIntegerField("Payment Allowance (days)")
     pay_rate = models.DecimalField("Pay Rate", decimal_places=2, max_digits=10)
     payment_terms = models.TextField("Payment Terms")
     created_date = models.DateTimeField("Created Date", auto_now_add=True)
@@ -37,12 +37,19 @@ class Invoice(models.Model):
     gen_date = models.DateField("Date", default=date_mod.today)
     pay_date = models.DateField("Due Date")
     payment_terms = models.TextField("Payment Terms")
-    is_paid = models.BooleanField("Paid")
+    is_paid = models.BooleanField("Paid", default=False)
     created_date = models.DateTimeField("Created Date", auto_now_add=True)
     modified_date = models.DateTimeField("Modified Date", auto_now=True)
 
     def __str__(self):
         return "Invoice #" + self.invoice_num + " (" + self.client.name + ")"
+
+    def save(self, **kwargs):
+        if self.pay_date is None:
+            self.pay_date = self.gen_date
+            if self.client.payment_allowance > 0:
+                self.pay_date = self.gen_date + timedelta(days=self.client.payment_allowance)
+        return super().save(**kwargs)
 
 class InvoiceLine(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
@@ -56,6 +63,18 @@ class InvoiceLine(models.Model):
 
     def __str__(self):
         return "Line Item #" + self.invoice.invoice_num + ": " + self.description
+
+    def save(self, **kwargs):
+        if self.price is None:
+            self.price = 0
+            if self.invoice.client.pay_rate > 0:
+                self.price = self.invoice.client.pay_rate
+        if self.quantity is None:
+            self.quantity = 0
+
+        self.total = self.price * self.quantity
+
+        return super().save(**kwargs)
 
 class TimesheetEntry(models.Model):
     target_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
