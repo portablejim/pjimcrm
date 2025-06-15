@@ -4,18 +4,65 @@
 {% block content %}
 <div>
     <a href="{% url 'index' %}">Back</a>
-    <h1>PJim CRM</h1>
+    <h1>{{ client_record.name }}</h1>
     <div>
-        <h2>Projects</h2>
+        <h2>Active Projects</h2>
+        <table>
+        <thead>
+            <tr>
+                <th>Project</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
         {% if project_list %}
-            <ul>
             {% for project_record in project_list %}
-                <li><a href="{% url 'project_detail' client_record.id project_record.id %}">{{ project_record.name }}</a></li>
+            <tr>
+                <td class="project_name"><a href="{% url 'project_detail' client_record.id project_record.id %}">{{ project_record.name }}</a></td>
+                <td class="project_actions">
+                    <form method="post" action="{% url 'project_timer_start' client_record.id project_record.id %}">
+                        <input type="hidden" name="retUrl" value="{{ request.get_full_path }}" />
+                        {% csrf_token %}
+                        <input type="submit" value="Start" />
+                    </form>
+                </td>
+            </tr>
             {% endfor %}
-            </ul>
         {% else %}
-            <p>No projects</p>
+            <tr><td>No projects</td></tr>
         {% endif %}
+        </tbody>
+        </table>
+        <h2>Invoices</h2>
+        <table class="invoiceList">
+        <thead>
+            <tr>
+                <th>Invoice #</th>
+                <th>Invoice Date</th>
+                <th>Due Date</th>
+                <th>Paid?</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if invoice_list %}
+            {% for invoice_record in invoice_list %}
+                <tr>
+                    <td><a href="{% url 'invoice_detail' client_record.id invoice_record.id %}"># {{ invoice_record.invoice_num }}</a></td>
+                    <td>{{ invoice_record.gen_date|date }}</td>
+                    <td>{{ invoice_record.pay_date|date }}</td>
+                    {% if invoice_record.paid %}
+                        <td>Y</td>
+                    {% else %}
+                        <td>N</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr><td>No invoices</td></tr>
+        {% endif %}
+        </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

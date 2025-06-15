@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render
 
-from .models import Client, Project
+from .models import Client, Project, Invoice
 
 # Create your views here.
 @login_required()
@@ -16,7 +16,8 @@ def index(request):
 def client_detail(request, client_id):
     client_record = get_object_or_404(Client, pk=client_id)
     project_list = client_record.project_set.all()
-    return render(request, "pjimcrm/client_detail.html", {"client_record": client_record, "project_list": project_list})
+    invoices = Invoice.objects.filter(client_id=client_record).order_by("gen_date")
+    return render(request, "pjimcrm/client_detail.html", {"client_record": client_record, "project_list": project_list, "invoice_list": invoices})
 
 
 @login_required()
@@ -32,9 +33,13 @@ def project_create(request, client_id, project_id):
 def project_edit(request, client_id, project_id):
     return HttpResponse("Hello World. Project id:" + str(project_id))
 
+@login_required()
+def project_timer_start(request, client_id, project_id):
+    return HttpResponse("Hello World. Project id:" + str(project_id))
+
 
 @login_required()
-def invoice_detail(request, invoice_id):
+def invoice_detail(request, client_id, invoice_id):
     return HttpResponse("Hello World. Invoice id:" + str(invoice_id))
 
 
