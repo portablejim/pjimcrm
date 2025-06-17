@@ -1,68 +1,90 @@
 {% extends "pjimcrm/base.html" %}
 
 {% block page_title %}{{ client_record.name }} [Client] - PJim CRM Home{% endblock %}
+{% block nav %}
+    <nav>
+        <a href="{% url 'index' %}" class="navActive">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M48 0C21.5 0 0 21.5 0 48L0 464c0 26.5 21.5 48 48 48l96 0 0-80c0-26.5 21.5-48 48-48s48 21.5 48 48l0 80 96 0c26.5 0 48-21.5 48-48l0-416c0-26.5-21.5-48-48-48L48 0zM64 240c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zm112-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16zm80 16c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zM80 96l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16zm80 16c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zM272 96l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16z"/></svg>
+            <span>Clients</span>
+        </a>
+        <div class="vbar"></div>
+        <a href="{% url 'timer_index' %}">
+            <svg class="icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M464 256A208 208 0 1 1 48 256a208 208 0 1 1 416 0zM0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM232 120l0 136c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2 280 120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/></svg>
+            <span>Timer</span>
+        </a>
+    </nav>
+{% endblock %}
+{% block topnav %}
+    <a href="{% url 'index' %}">
+        <svg class="icon" aria-role="img" aria-label="Back" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
+    </a>
+    <h1 class="navHeadingOnly">{{ client_record.name }}</h1>
+{% endblock %}
 {% block content %}
-<div>
-    <a href="{% url 'index' %}">Back</a>
-    <h1>{{ client_record.name }}</h1>
-    <div>
-        <h2>Active Projects</h2>
-        <table>
-        <thead>
-            <tr>
-                <th>Project</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
+<div class="atkinson-hyperlegible-next-regular">
+    <h2>Active Projects</h2>
+    <table class="projectTable">
+    <thead>
+        <tr>
+            <th scope="col">Project</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
 
-        {% if project_list %}
-            {% for project_record in project_list %}
-            <tr>
-                <td class="project_name"><a href="{% url 'project_detail' client_record.id project_record.id %}">{{ project_record.name }}</a></td>
-                <td class="project_actions">
-                    <form method="post" action="{% url 'project_timer_start' client_record.id project_record.id %}">
-                        <input type="hidden" name="retUrl" value="{{ request.get_full_path }}" />
-                        {% csrf_token %}
-                        <input type="submit" value="Start" />
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr><td>No projects</td></tr>
-        {% endif %}
-        </tbody>
-        </table>
-        <h2>Invoices</h2>
-        <table class="invoiceList">
-        <thead>
-            <tr>
-                <th>Invoice #</th>
-                <th>Invoice Date</th>
-                <th>Due Date</th>
-                <th>Paid?</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% if invoice_list %}
-            {% for invoice_record in invoice_list %}
-                <tr>
-                    <td><a href="{% url 'invoice_detail' client_record.id invoice_record.id %}"># {{ invoice_record.invoice_num }}</a></td>
-                    <td>{{ invoice_record.gen_date|date }}</td>
-                    <td>{{ invoice_record.pay_date|date }}</td>
-                    {% if invoice_record.paid %}
-                        <td>Y</td>
-                    {% else %}
-                        <td>N</td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-        {% else %}
-            <tr><td>No invoices</td></tr>
-        {% endif %}
-        </tbody>
-        </table>
+    {% if project_list %}
+        {% for project_record in project_list %}
+        <tr>
+            <th class="project_name" scope="row"><a href="{% url 'project_detail' client_record.id project_record.id %}">{{ project_record.name }}</a></th>
+            <td class="project_actions">
+                <form method="post" action="{% url 'project_timer_start' client_record.id project_record.id %}">
+                    <input type="hidden" name="retUrl" value="{{ request.get_full_path }}" />
+                    {% csrf_token %}
+                    <input class="flatButton" type="submit" value="Start" />
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <tr><td colspan="2">No projects</td></tr>
+    {% endif %}
+    </tbody>
+    </table>
+    <div class="actionHeading">
+        <h2>Pending Hours</h2>
+        <div class="actions">
+            <form method="post" action="{% url 'invoice_build' client_record.id %}">
+                {% csrf_token %}
+                <input class="flatButton" type="submit" value="Build Invoice" />
+            </form>
+        </div>
     </div>
+    <h2>Invoices</h2>
+    <table class="invoiceList">
+    <thead>
+        <tr>
+            <th scope="col">Invoice #</th>
+            <th scope="col">Due Date</th>
+            <th scope="col">Paid?</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% if invoice_list %}
+        {% for invoice_record in invoice_list %}
+            <tr>
+                <th scope="row"><a href="{% url 'invoice_detail' client_record.id invoice_record.id %}"># {{ invoice_record.invoice_num }}</a></th>
+                <td>{{ invoice_record.pay_date|date }}</td>
+                {% if invoice_record.paid %}
+                    <td>Y</td>
+                {% else %}
+                    <td>N</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    {% else %}
+        <tr><td>No invoices</td></tr>
+    {% endif %}
+    </tbody>
+    </table>
 </div>
 {% endblock %}

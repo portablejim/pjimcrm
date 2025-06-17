@@ -52,3 +52,13 @@ def invoice_build(request, client_id):
 def timer_index(request):
     return HttpResponse("Hello World. Timesheet index.")
 
+
+@login_required()
+def timer_current_get(request):
+    return HttpResponse("Hello World. Timesheet index.")
+
+
+@login_required()
+def timer_current_update(request):
+    return HttpResponse("Hello World. Timesheet index.")
+

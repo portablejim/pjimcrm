@@ -91,5 +91,186 @@
   font-style: normal;
 }
 
+html, body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
 
+.wrapper {
+  height: 100%;
+}
+
+
+.layout {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout .nav {
+  order: 10;
+}
+
+.layout .content {
+  flex-grow: 1;
+}
+
+.nav nav {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: solid white;
+}
+
+.nav nav a {
+  font-family: "Noto Sans", sans-serif;
+  flex-grow: 1;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border-top: 1px solid lightgrey;
+
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.nav nav div.vbar {
+  height: 3em;
+  width: 0;
+  border-right: 1px solid black;
+}
+
+nav .icon {
+  height: 2em;
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+.nav nav .navActive {
+  font-weight: 600;
+}
+
+.content {
+  padding: 0 1em;
+}
+
+.topnav .icon {
+  width: 2em;
+  display: inline-block;
+}
+
+.topnav a {
+  margin-left: -0.5em;
+  padding: 0.5em 1em;
+}
+
+.topnav {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0.25em 1em;
+}
+
+.topnav .navHeadingOnly {
+  font-family: "Overpass", sans-serif;
+  flex-grow: 1;
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.navHeadingOnly.majorHeading {
+  font-size: 1.5rem;
+}
+
+.verticalList {
+  list-style: none;
+  padding: 0;
+}
+
+.verticalList li {
+  border-bottom: 1px solid black;
+}
+
+.verticalList li:last-child {
+  border-bottom: none;
+}
+
+.verticalList li a {
+  color: black;
+  padding: 0.75em 1em;
+  display: block;
+}
+
+.actionHeading {
+  display: flex;
+  flex-direction: row;
+  justify-items: center;
+}
+
+.actionHeading h1,
+.actionHeading h2,
+.actionHeading h3,
+.actionHeading h4 {
+  flex-grow: 1;
+
+}
+
+.actionHeading .actions {
+  display: flex;
+  align-items: center;
+}
+
+.invoiceList {
+  width: 100%;
+}
+
+.invoiceList th {
+  text-align: left;
+}
+
+.invoiceList tbody th {
+  font-weight: normal;
+}
+
+.invoiceList a {
+  display: inline-block;
+  padding: 0.5em 1em 0.5em 0;
+}
+
+.projectTable {
+  width: 100%;
+}
+
+.projectTable th {
+  text-align: left;
+}
+
+.projectTable tbody th {
+  font-weight: normal;
+}
+
+.projectTable .project_actions {
+  width: 4em;
+}
+
+.projectTable a {
+  display: inline-block;
+  padding: 0.5em 1em 0.5em 0;
+}
+
+.flatButton {
+  background: none;
+  border: 1px solid black;
+  padding: 0.5em 1em;
+}
 
