@@ -60,7 +60,8 @@ def project_timer_start(request, client_id, project_id):
 
 @login_required()
 def invoice_detail(request, client_id, invoice_id):
-    return HttpResponse("Hello World. Invoice id:" + str(invoice_id))
+    invoice_record = get_object_or_404(Invoice, pk=invoice_id)
+    return render(request, "pjimcrm/invoice_detail.html", {"invoice_record": invoice_record, "client_id": client_id})
 
 
 @login_required()
