@@ -1,0 +1,28 @@
+{
+  "name": "PJim CRM",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/static/favicon.webp",
+      "sizes": "100x100",
+      "type": "image/webp"
+    },
+    {
+      "src": "/static/favicon_full.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/favicon_full.webp",
+      "sizes": "1024x1024",
+      "type": "image/webp"
+    },
+    {
+      "src": "/static/favicon.svg",
+      "sizes": "1024x1024",
+      "type": "image/svg+xml"
+    }
+  ],
+  "display": "standalone"
+}
+
