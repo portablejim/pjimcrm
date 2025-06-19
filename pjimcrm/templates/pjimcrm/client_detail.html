@@ -55,6 +55,7 @@
         <div class="actions">
             <form method="post" action="{% url 'invoice_build' client_record.id %}">
                 {% csrf_token %}
+                <input type="hidden" name="retUrl" value="{{ request.get_full_path }}" />
                 <input class="flatButton" type="submit" value="Build Invoice" />
             </form>
         </div>

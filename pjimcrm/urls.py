@@ -12,4 +12,7 @@ urlpatterns = [
     path("client/<int:client_id>/invoice/<int:invoice_id>/", views.invoice_detail, name="invoice_detail"),
     path("client/<int:client_id>/build-invoice", views.invoice_build, name="invoice_build"),
     path("timer/", views.timer_index, name="timer_index"),
+    path("timer/actions/add", views.timer_current_add, name="timer_add"),
+    path("timer/actions/update", views.timer_current_update, name="timer_update"),
+    path("timer/actions/stop", views.timer_current_stop, name="timer_stop"),
 ]

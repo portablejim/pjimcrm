@@ -92,6 +92,9 @@ class TimesheetEntry(models.Model):
     created_date = models.DateTimeField("Created Date", auto_now_add=True)
     modified_date = models.DateTimeField("Modified Date", auto_now=True)
 
+    def is_running(self):
+        return self.timestamp_started != None and self.timestamp_stopped is None
+
     def __str__(self):
         return "Timesheet Entry" + self.description
 

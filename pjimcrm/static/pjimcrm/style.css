@@ -274,3 +274,95 @@ nav .icon {
   padding: 0.5em 1em;
 }
 
+.buttonIcon {
+  display: block;
+  height: 1em;
+  padding: 0.2em;
+}
+
+.timerMain[data-running=true] .waiting {
+  display: none;
+}
+
+.timerMain[data-running=false] .running {
+  display: none;
+}
+
+.timerMain[data-running=true] .running {
+
+}
+
+.timerMain[data-running=false] .waiting {
+
+}
+
+.timerRow {
+  display: flex;
+  flex-direction: row;
+  padding: 0.25em 0.2em;
+  column-gap: 0.25em;
+  align-items: center;
+}
+
+.timerRow label {
+  display: inline-block;
+  padding-right: 0.5em;
+}
+
+.timerRow .timerInput {
+  flex-shrink: 1;
+  flex-grow: 1;
+  padding: 0.5em 0.2em;
+  min-width: 50px;
+}
+
+.timerRow .timerCheckboxInput {
+  padding: 0.5em 0.2em;
+}
+
+.timerRow .timerCheckboxLabel {
+  padding: 0.5em 0.2em;
+  flex-grow: 1;
+}
+
+.rowSplit2 {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+}
+
+.rowSplit2 .rowSplitInner {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+  padding: 0.25em 0.2em;
+}
+
+.timerAddButton {
+  align-self: center;
+  margin: auto;
+  width: 100%;
+  padding: 0.75em 0.2em;
+  background-color: rgb(13, 110, 253);
+  color: white;
+}
+
+@media screen and (min-width: 400px)
+{
+  .rowSplit2 {
+    flex-direction: row;
+    column-gap: 1em;
+  }
+
+  .rowSplit2 .rowSplitInner {
+    width: 50%;
+    padding: 0;
+  }
+
+  .timerAddButton {
+    width: 95%;
+  }
+}
+

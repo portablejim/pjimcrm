@@ -1,0 +1,108 @@
+{% extends "pjimcrm/base.html" %}
+
+{% block page_title %}PJim CRM Timer{% endblock %}
+{% block nav %}
+    <nav>
+        <a href="{% url 'index' %}">
+            <svg class="icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M64 48c-8.8 0-16 7.2-16 16l0 384c0 8.8 7.2 16 16 16l80 0 0-64c0-26.5 21.5-48 48-48s48 21.5 48 48l0 64 80 0c8.8 0 16-7.2 16-16l0-384c0-8.8-7.2-16-16-16L64 48zM0 64C0 28.7 28.7 0 64 0L320 0c35.3 0 64 28.7 64 64l0 384c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm88 40c0-8.8 7.2-16 16-16l48 0c8.8 0 16 7.2 16 16l0 48c0 8.8-7.2 16-16 16l-48 0c-8.8 0-16-7.2-16-16l0-48zM232 88l48 0c8.8 0 16 7.2 16 16l0 48c0 8.8-7.2 16-16 16l-48 0c-8.8 0-16-7.2-16-16l0-48c0-8.8 7.2-16 16-16zM88 232c0-8.8 7.2-16 16-16l48 0c8.8 0 16 7.2 16 16l0 48c0 8.8-7.2 16-16 16l-48 0c-8.8 0-16-7.2-16-16l0-48zm144-16l48 0c8.8 0 16 7.2 16 16l0 48c0 8.8-7.2 16-16 16l-48 0c-8.8 0-16-7.2-16-16l0-48c0-8.8 7.2-16 16-16z"/></svg>
+            <span>Clients</span>
+        </a>
+        <div class="vbar"></div>
+        <a href="{% url 'timer_index' %}" class="navActive">
+            <svg class="icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M256 0a256 256 0 1 1 0 512A256 256 0 1 1 256 0zM232 120l0 136c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2 280 120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/></svg>
+            <span>Timer</span>
+        </a>
+    </nav>
+{% endblock %}
+{% block topnav %}
+    <h1 class="navHeadingOnly majorHeading">PJim CRM</h1>
+{% endblock %}
+{% block content %}
+<div class="atkinson-hyperlegible-next-regular">
+    <h2>Timer</h2>
+    <div class="timerMain" data-running="{{ timer_status.running|yesno:"true,false" }}" data-timer="{{ timer_status }}">
+        <div class="running">
+            <form class="timerRunningForm" method="post" action="{% url 'timer_stop' %}">
+                <div class="timerDisplayContainer fira-code-regular">
+                    {% spaceless %}
+                    <div class="timerDisplay">
+                        <span class="timerDisplayHours">XX</span>
+                        <span class="timerDisplaySeparator">:</span>
+                        <span class="timerDisplayMinutes">XX</span>
+                        <span class="timerDisplaySeparator">:</span>
+                        <span class="timerDisplaySeconds">XX</span>
+                    </div>
+                    {% endspaceless %}
+                </div>
+                <div class="timerRow">
+                    <label for="timerDescription">Description</label>
+                    <input id="timerRunningDescription" name="description" type="text" value="{{ timer_status.timer.description }}" />
+                    <button class="buttonIconButton">
+                        <svg class="icon buttonIcon" role="img" aria-label="Update" title="Update" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M500.3 0h-47.4a12 12 0 0 0 -12 12.6l4 82.8A247.4 247.4 0 0 0 256 8C119.3 8 7.9 119.5 8 256.2 8.1 393.1 119.1 504 256 504a247.1 247.1 0 0 0 166.2-63.9 12 12 0 0 0 .5-17.4l-34-34a12 12 0 0 0 -16.4-.6A176 176 0 1 1 402.1 157.8l-101.5-4.9a12 12 0 0 0 -12.6 12v47.4a12 12 0 0 0 12 12h200.3a12 12 0 0 0 12-12V12a12 12 0 0 0 -12-12z"/></svg>
+                    </button>
+                </div>
+                <input type="hidden" name="id" value="" />
+                <input type="hidden" name="retUrl" value="{{ request.get_full_path }}" />
+                {% csrf_token %}
+                <div class="timerRow">
+                    <input type="submit" class="timerStopButton" value="Stop Timer" />
+                </div>
+            </form>
+        </div>
+        <div class="waiting">
+            <form class="timerNewForm" method="post" action="{% url 'timer_add' %}">
+            {% if project_list %}
+                <div class="timerRow">
+                <label for="timerProjectSelect">Project</label>
+                    <select id="timerProjectSelect" class="timerInput" name="project" data-selected="{{ latest_project_id }}">
+                        {% for project_record in project_list %}
+                        <option value="{{ project_record.id }}" {% if project_record.id == latest_project_id %}selected{% endif %}>{{ project_record.name }} @ {{ project_record.client.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="timerRow">
+                    <label for="timerNewDescription">Description</label>
+                    <input id="timerNewDescription" class="timerInput" name="description" type="text" />
+                </div>
+                <div class="timerRow">
+                    <div class="rowSplit2">
+                        <div class="rowSplitInner">
+                            <label for="timerHours">Hours</label>
+                            <input id="timerHours" class="timerInput" type="number" min="0" value="0" />
+                        </div>
+                        <div class="rowSplitInner">
+                            <label for="timerMinutes">Minutes</label>
+                            <input id="timerMinutes" class="timerInput" type="number" min="0" max="59" value="0" />
+                        </div>
+                    </div>
+                </div>
+                <div class="timerRow">
+                    <input id="timerStart" class="timerCheckboxInput" type="checkbox" name="startTimer" value="true" />
+                    <label for="timerStart" class="timerCheckboxLabel">Start timer</label>
+                </div>
+                <input type="hidden" name="retUrl" value="{{ request.get_full_path }}" />
+                {% csrf_token %}
+                <div class="timerRow">
+                    <input type="submit" class="timerAddButton" value="Add Timer" />
+                </div>
+            {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+<script type="application/javascript">
+
+    if(!document.runningTimerDisplayUpdate)
+    {
+        document.runningTimerDisplayUpdate = true;
+        setInterval(updateTimerDisplay, 200);
+    }
+    document.querySelectorAll('.timerMain')?.forEach(timerEl => {
+        let updateDescriptionEl = timerEl.querySelector('.buttonIconButton');
+        if (updateDescriptionEl)
+        {
+            updateDescriptionEl.addEventListener('click', event => handleUpdateTimerDescription(timerEl, event, '{% url "timer_update" %}'))
+        }
+    });
+</script>
+{% endblock %}
