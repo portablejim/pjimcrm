@@ -40,7 +40,22 @@ def project_edit(request, client_id, project_id):
 
 @login_required()
 def project_timer_start(request, client_id, project_id):
-    return HttpResponse("Hello World. Project id:" + str(project_id))
+    if request.method == 'POST' and not get_running_timers()['running']:
+        timesheet_record = TimesheetEntry()
+        timesheet_record.target_user = request.user
+        timesheet_record.project = Project(id=project_id)
+        timesheet_record.description = uuid.uuid4()
+        timesheet_record.description_set = False
+        timesheet_record.timestamp_started = timezone.now()
+        timesheet_record.save()
+
+    if 'retUrl' in request.POST:
+        testFunc, testArgs, testKwargs = resolve(request.POST["retUrl"])
+        if testFunc is not None:
+            return HttpResponseRedirect(request.POST["retUrl"])
+        else:
+            return HttpResponse("OK")
+    return HttpResponse("OK")
 
 
 @login_required()
@@ -50,7 +65,13 @@ def invoice_detail(request, client_id, invoice_id):
 
 @login_required()
 def invoice_build(request, client_id):
-    return HttpResponse("Build invoice. Client id:" + str(client_id))
+    if 'retUrl' in request.POST:
+        testFunc, testArgs, testKwargs = resolve(request.POST["retUrl"])
+        if testFunc is not None:
+            return HttpResponseRedirect(request.POST["retUrl"])
+        else:
+            return HttpResponse("OK")
+    return HttpResponse("OK")
 
 
 @login_required()
