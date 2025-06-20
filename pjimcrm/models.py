@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from datetime import date as date_mod, timedelta
+from django.utils import timezone
 import math
 import uuid
 
@@ -81,6 +82,7 @@ class TimesheetEntry(models.Model):
     project = models.ForeignKey(Project, on_delete=models.RESTRICT)
     description = models.CharField("Description")
     description_set = models.BooleanField("Description has been set", default=False)
+    entry_date = models.DateField("Date", default=date_mod.today)
     length_raw = models.DurationField("Length (raw)", default=timedelta())
     length_rounded = models.DurationField("Length (rounded)", default=timedelta())
     timestamp_started = models.DateTimeField("Time Started", null=True, blank=True)
