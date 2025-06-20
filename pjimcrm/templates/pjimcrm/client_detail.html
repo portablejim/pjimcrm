@@ -25,7 +25,12 @@
 {% endblock %}
 {% block content %}
 <div class="atkinson-hyperlegible-next-regular">
-    <h2>Active Projects</h2>
+    <div class="actionHeading">
+        <h2>Active Projects</h2>
+        <div class="actions">
+            <a class="flatButton" href="{% url 'project_create' client_record.id %}">Add</a>
+        </div>
+    </div>
     <table class="projectTable">
     <thead>
         <tr>

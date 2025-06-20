@@ -1,0 +1,50 @@
+{% extends "pjimcrm/base.html" %}
+
+{% block page_title %}Create Project - PJim CRM Home{% endblock %}
+{% block nav %}
+    <nav>
+        <a href="{% url 'index' %}" class="navActive">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M48 0C21.5 0 0 21.5 0 48L0 464c0 26.5 21.5 48 48 48l96 0 0-80c0-26.5 21.5-48 48-48s48 21.5 48 48l0 80 96 0c26.5 0 48-21.5 48-48l0-416c0-26.5-21.5-48-48-48L48 0zM64 240c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zm112-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16zm80 16c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zM80 96l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16zm80 16c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zM272 96l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16z"/></svg>
+            <span>Clients</span>
+        </a>
+        <div class="vbar"></div>
+        <a href="{% url 'timer_index' %}">
+            <svg class="icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M464 256A208 208 0 1 1 48 256a208 208 0 1 1 416 0zM0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM232 120l0 136c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2 280 120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/></svg>
+            <span>Timer</span>
+        </a>
+    </nav>
+{% endblock %}
+{% block topnav %}
+    <a href="{% url 'client_detail' client_record.id %}">
+        <svg class="icon" aria-role="img" aria-label="Back" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
+    </a>
+    <div class="navHeadingAndSubheading">
+        <h1 class="navHeading">Create Project</h1>
+        <p class="navSubheading">{{ client_record.name }}</p>
+    </div>
+{% endblock %}
+{% block precontent %}
+{% include "pjimcrm/snippets/timer_banner.html" %}
+{% endblock %}
+{% block content %}
+<div class="atkinson-hyperlegible-next-regular">
+    <form class="editForm" method="post" action="">
+        <div class="formRow formText">
+            <label for="projectNameText">Name:</label>
+            <input id="projectNameText" name="name" type="text" value="" />
+        </div>
+        <div class="formRow formText">
+            <label for="projectDescriptionText">Description:</label>
+            <input id="projectDescriptionText" name="description" type="text" value="" />
+        </div>
+        <div class="formRow formCheckbox">
+            <input id="projectActiveCheckbox" name="is_active" type="checkbox" value="true" checked />
+            <label for="projectActiveCheckbox">Is Active</label>
+        </div>
+        {% csrf_token %}
+        <div class="formRow formSubmit">
+            <input type="submit" value="Save" />
+        </div>
+    </form>
+</div>
+{% endblock %}

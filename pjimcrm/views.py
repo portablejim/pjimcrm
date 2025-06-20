@@ -53,8 +53,20 @@ def project_detail(request, client_id, project_id):
     })
 
 @login_required()
-def project_create(request, client_id, project_id):
-    return HttpResponse("Hello World. Project id:" + str(project_id))
+def project_create(request, client_id):
+    client_record = get_object_or_404(Client, pk=client_id)
+    if request.method == 'POST':
+        new_project = Project(client=client_record)
+        if 'name' in request.POST:
+            new_project.name = request.POST["name"]
+        if 'description' in request.POST:
+            new_project.description = request.POST["description"]
+        if 'is_active' in request.POST:
+            new_project.description = request.POST["is_active"] == "true"
+        new_project.save()
+        return redirect("client_detail", client_id=client_id)
+    else:
+        return render(request, "pjimcrm/project_create.html", {"client_record": client_record})
 
 @login_required()
 def project_delete(request, client_id, project_id):
