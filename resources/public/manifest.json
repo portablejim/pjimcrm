@@ -1,6 +1,6 @@
 {
   "name": "PJim CRM",
-  "start_url": "/",
+  "start_url": "/crm/",
   "icons": [
     {
       "src": "/static/favicon.webp",
