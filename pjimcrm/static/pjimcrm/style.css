@@ -577,10 +577,15 @@ nav .icon {
   padding: 1.0em 0;
 }
 
-.timerListTable .timer_name {
+.timerListTable .timer_name a {
   display: flex;
   flex-direction: column;
   text-align: left;
+  text-decoration: none;
+  color: black;
+}
+
+.timerListTable .timer_name a {
 }
 
 .timerListTable .timer_name .timer_description {

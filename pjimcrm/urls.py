@@ -9,6 +9,7 @@ urlpatterns = [
     path("client/<int:client_id>/create-project", views.project_create, name="project_create"),
     path("client/<int:client_id>/project/<int:project_id>/edit", views.project_edit, name="project_edit"),
     path("client/<int:client_id>/project/<int:project_id>/timer-start", views.project_timer_start, name="project_timer_start"),
+    path("client/<int:client_id>/project/<int:project_id>/timer/<int:timer_id>", views.project_timer_detail, name="project_timer_detail"),
     path("client/<int:client_id>/invoice/<int:invoice_id>/", views.invoice_detail, name="invoice_detail"),
     path("client/<int:client_id>/build-invoice", views.invoice_build, name="invoice_build"),
     path("timer/", views.timer_index, name="timer_index"),

@@ -58,16 +58,18 @@
         <tr>
             <th class="timer_name" scope="row">
                 {% if timer_record.description_set %}
+                <a href="{% url 'project_timer_detail' timer_record.project.client.id timer_record.project.id timer_record.id %}">
                 <span class="timer_description">{{ timer_record.description }}</span>
                 <span class="timer_description_extra">{{ timer_record.project.name }} - {{timer_record.project.client.name }}</span>
-                <a href="">{{ timer_record.name }}
-
                 </a>
                 {% else %}
-                <a href="">{{ timer_record.name }}</a>
+                <a href="{% url 'project_timer_detail' timer_record.project.client.id timer_record.project.id timer_record.id %}">
+                <span class="timer_description">[{{ timer_record.project.name }}]</span>
+                <span class="timer_description_extra">{{timer_record.project.client.name }}</span>
+                </a>
                 {% endif %}
             </th>
-            <td class="timer_time">{{ timer_record.created_date|date:"d/m/y" }}</td>
+            <td class="timer_time">{{ timer_record.entry_date|date:"d/m/y" }}</td>
             <td class="timer_time">{{ timer_record.length_raw }}</td>
             <td class="timer_actions">
                 <form method="post" action="{% url 'timer_delete' %}">
@@ -100,16 +102,18 @@
         <tr>
             <th class="timer_name" scope="row">
                 {% if timer_record.description_set %}
+                <a href="">
                 <span class="timer_description">{{ timer_record.description }}</span>
                 <span class="timer_description_extra">{{ timer_record.project.name }} - {{timer_record.project.client.name }}</span>
-                <a href="">{{ timer_record.name }}
-
                 </a>
                 {% else %}
-                <a href="">{{ timer_record.name }}</a>
+                <a href="">
+                <span class="timer_description">[{{ timer_record.project.name }}]</span>
+                <span class="timer_description_extra">{{timer_record.project.client.name }}</span>
+                </a>
                 {% endif %}
             </th>
-            <td class="timer_time">{{ timer_record.created_date|date:"d/m/y" }}</td>
+            <td class="timer_date">{{ timer_record.entry_date|date:"d/m/y" }}</td>
             <td class="timer_time">{{ timer_record.length_raw }}</td>
         </tr>
         {% endfor %}

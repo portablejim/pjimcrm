@@ -44,8 +44,8 @@ def client_detail(request, client_id):
 @login_required()
 def project_detail(request, client_id, project_id):
     project_record = get_object_or_404(Project, pk=project_id)
-    timers_not_invoiced = project_record.timesheetentry_set.filter(invoice_reference=None)
-    timers_invoiced = project_record.timesheetentry_set.exclude(invoice_reference=None)
+    timers_not_invoiced = project_record.timesheetentry_set.filter(invoice_reference=None).order_by("-entry_date", "-created_date")
+    timers_invoiced = project_record.timesheetentry_set.exclude(invoice_reference=None).order_by("-entry_date", "-created_date")
     return render(request, "pjimcrm/project_detail.html", {
         "project_record": project_record,
         "timer_list": timers_not_invoiced,
@@ -104,6 +104,12 @@ def project_timer_start(request, client_id, project_id):
         else:
             return HttpResponse("OK")
     return HttpResponse("OK")
+
+
+@login_required()
+def project_timer_detail(request, client_id, project_id, timer_id):
+    timesheet_record = get_object_or_404(TimesheetEntry, pk=timer_id)
+    return render(request, "pjimcrm/timesheet_project_detail.html", {"timesheet_record": timesheet_record, "client_id": client_id})
 
 
 @login_required()
