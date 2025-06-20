@@ -1,0 +1,29 @@
+<div id="timerRunningBanner" class="timerRunningBanner atkinson-hyperlegible-next-regular" data-running="false" data-timer="">
+<form id="timerRunningBannerForm" class="timerRunningBannerForm" method="post" action="{% url 'timer_stop' %}">
+    <h2 class="sr-only">Running Timer</h2>
+    <div class="timerRunningBannerRow">
+        <div class="runningTitle">
+            <p class="runningTimerHeading"></p>
+            <p class="runningTimerSubheading"></p>
+        </div>
+        <div class="timerDisplayContainer fira-code-regular">
+            {% spaceless %}
+            <div class="timerDisplay">
+                <span class="timerDisplayHours">XX</span>
+                <span class="timerDisplaySeparator">:</span>
+                <span class="timerDisplayMinutes">XX</span>
+                <span class="timerDisplaySeparator">:</span>
+                <span class="timerDisplaySeconds">XX</span>
+            </div>
+            {% endspaceless %}
+        </div>
+        <input type="hidden" name="id" value="" />
+        <input type="hidden" name="retUrl" value="{{ request.get_full_path }}" />
+        {% csrf_token %}
+        <input type="submit" class="timerStopButton" value="Stop" />
+    </div>
+</form>
+</div>
+<script type="application/javascript">
+    initBannerTimerDisplay("{% url 'timer_get' %}");
+</script>

@@ -290,17 +290,32 @@ nav .icon {
   padding: 0.5em 1em;
 }
 
+.flatButton[disabled] {
+  border-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
 .buttonIcon {
   display: block;
   height: 1em;
   padding: 0.2em;
 }
 
+.sr-only {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .timerMain[data-running=true] .waiting {
   display: none;
 }
 
-.timerMain[data-running=false] .running {
+.timerMain[data-running=false] .running,
+.timerRunningBanner[data-running=false] {
   display: none;
 }
 
@@ -318,6 +333,12 @@ nav .icon {
   padding: 0.25em 0.2em;
   column-gap: 0.25em;
   align-items: center;
+}
+
+.timerRow p {
+  margin: auto;
+  text-align: left;
+  flex-grow: 1;
 }
 
 .timerRow label {
@@ -339,6 +360,55 @@ nav .icon {
 .timerRow .timerCheckboxLabel {
   padding: 0.5em 0.2em;
   flex-grow: 1;
+}
+
+.timerRow .timerClient,
+.timerRow .timerProject {
+  padding: 0.5em 0;
+}
+
+.timerRunningBannerRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #A50021;
+  color: white;
+  padding: 0.5em 1em;
+}
+
+.timerRunningBannerRow .runningTitle {
+  flex-grow: 1;
+  flex-shrink: 1;
+  text-overflow: ellipsis;
+  display: flex;
+  flex-direction: column;
+  padding: 0.2em 0;
+}
+
+.timerRunningBannerRow .runningTitle p {
+  margin: 0;
+  padding: 0;
+}
+
+.timerRunningBannerRow .runningTimerHeading {
+  font-weight: bold;
+}
+
+.timerRunningBannerRow .timerDisplayContainer {
+  padding: 0.2em 1em;
+}
+
+@media screen and (min-width: 400px){
+  .timerRunningBannerRow .timerDisplayContainer {
+    font-size: 1.2em;
+  }
+}
+
+.timerRunningBannerRow .timerStopButton {
+  background: none;
+  border: 1px solid white;
+  padding: 0.5em 1em;
+  color: white;
 }
 
 .rowSplit2 {

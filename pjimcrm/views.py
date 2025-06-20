@@ -21,9 +21,10 @@ def index(request):
 
 @login_required()
 def client_detail(request, client_id):
-    timer_status = json.dumps(get_running_timers())
+    timer_status_object = get_running_timers()
+    timer_status = json.dumps(timer_status_object)
     client_record = get_object_or_404(Client, pk=client_id)
-    project_list = client_record.project_set.all()
+    project_list = client_record.project_set.filter(is_active=True)
     pending_entries = Sum("timesheetentry__length_rounded", filter=Q(timesheetentry__is_invoiced=False))
     pending_hours = client_record.project_set.annotate(hours_sum=pending_entries).filter(hours_sum__gt=timedelta())
     total_pending_hours = pending_hours.aggregate(Sum("hours_sum"))["hours_sum__sum"]
@@ -33,6 +34,7 @@ def client_detail(request, client_id):
         "project_list": project_list,
         "invoice_list": invoices,
         "timer_status": timer_status,
+        "timer_status_object": timer_status_object,
         "pending_hours": pending_hours,
         "total_pending_hours": total_pending_hours
         })

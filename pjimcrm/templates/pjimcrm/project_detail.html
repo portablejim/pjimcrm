@@ -1,6 +1,9 @@
 {% extends "pjimcrm/base.html" %}
 
 {% block page_title %}{{ project_record.name }} [Project] - PJim CRM Home{% endblock %}
+{% block precontent %}
+{% include "pjimcrm/snippets/timer_banner.html" %}
+{% endblock %}
 {% block content %}
 <div>
     <a href="{% url 'client_detail' project_record.client.id %}">Back</a>

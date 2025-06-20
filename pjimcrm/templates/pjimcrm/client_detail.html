@@ -20,6 +20,9 @@
     </a>
     <h1 class="navHeadingOnly">{{ client_record.name }}</h1>
 {% endblock %}
+{% block precontent %}
+{% include "pjimcrm/snippets/timer_banner.html" %}
+{% endblock %}
 {% block content %}
 <div class="atkinson-hyperlegible-next-regular">
     <h2>Active Projects</h2>
@@ -40,7 +43,7 @@
                 <form method="post" action="{% url 'project_timer_start' client_record.id project_record.id %}">
                     <input type="hidden" name="retUrl" value="{{ request.get_full_path }}" />
                     {% csrf_token %}
-                    <input class="flatButton" type="submit" value="Start" />
+                    <input class="flatButton disableOnRunning" type="submit" value="Start" {% if timer_status_object.running %}disabled{% endif %} />
                 </form>
             </td>
         </tr>

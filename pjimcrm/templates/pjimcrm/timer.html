@@ -35,6 +35,12 @@
                     {% endspaceless %}
                 </div>
                 <div class="timerRow">
+                    <p class="timerClient">Client: <span class="timerClientName">{{ timer_status.timer.client_name }}</span></p>
+                </div>
+                <div class="timerRow">
+                    <p class="timerProject">Project: <span class="timerProjectName">{{ timer_status.timer.project_name }}</span></p>
+                </div>
+                <div class="timerRow">
                     <label for="timerDescription">Description</label>
                     <input id="timerRunningDescription" name="description" type="text" value="{{ timer_status.timer.description }}" />
                     <button class="buttonIconButton">

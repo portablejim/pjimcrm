@@ -7,6 +7,8 @@ def get_running_timers():
     if has_timers:
         current_timer = {
             "id": timers[0].id,
+            "client_name": timers[0].project.client.name,
+            "project_name": timers[0].project.name,
             "description": timers[0].description,
             "description_set": timers[0].description_set,
             "length_raw": timers[0].length_raw.total_seconds(),
