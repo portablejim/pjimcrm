@@ -97,8 +97,7 @@
     </div>
     {% if timer_status_object.running == False %}
     <h2>Today's Timers</h2>
-    <div>
-
+    <div class="todaysTimersOuter">
     <table class="todaysTimersTable">
     <thead>
         <tr>
@@ -108,14 +107,13 @@
         </tr>
     </thead>
     <tbody>
-
     {% if timer_list %}
         {% for timer_record in timer_list %}
         <tr>
             <th class="timer_name" scope="row">
                 {% if timer_record.description_set %}
                 <span class="timer_description">{{ timer_record.description }}</span>
-                <span class="timer_descriptionExtra">{{ timer_record.project.name }} - {{timer_record.project.client.name }}</span>
+                <span class="timer_description_extra">{{ timer_record.project.name }} - {{timer_record.project.client.name }}</span>
                 <a href="">{{ timer_record.name }}
 
                 </a>
@@ -136,7 +134,7 @@
         </tr>
         {% endfor %}
     {% else %}
-        <tr><td colspan="2">No projects</td></tr>
+        <tr><td colspan="3">No projects</td></tr>
     {% endif %}
     </tbody>
     </table>

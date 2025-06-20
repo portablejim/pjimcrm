@@ -97,6 +97,10 @@ html, body {
   margin: 0;
 }
 
+body {
+  font-size: 1.0rem;
+}
+
 .wrapper {
   height: 100%;
 }
@@ -181,7 +185,9 @@ nav .icon {
   padding: 0.25em 1em;
 }
 
-.topnav .navHeadingOnly {
+.topnav .navHeadingOnly,
+.topnav .navHeadingAndSubheading {
+  text-align: left;
   font-family: "Overpass", sans-serif;
   flex-grow: 1;
   font-weight: 600;
@@ -191,6 +197,19 @@ nav .icon {
 
 .navHeadingOnly.majorHeading {
   font-size: 1.5rem;
+}
+
+.navHeadingAndSubheading .navHeading {
+  margin: 0;
+  flex-grow: 1;
+  font-size: 1.5rem;
+}
+
+.navHeadingAndSubheading .navSubheading {
+  margin: 0;
+  flex-grow: 1;
+  font-weight: 200;
+  font-size: 1.0rem;
 }
 
 .verticalList {
@@ -489,5 +508,94 @@ nav .icon {
   .timerDisplay {
     font-size: 4em;
   }
+}
+
+.todaysTimersTable {
+  width: 100%;
+}
+
+.todaysTimersTable .timer_name {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.todaysTimersTable .timer_name .timer_description {
+  font-weight: normal;
+}
+
+.todaysTimersTable .timer_name .timer_description_extra {
+  font-size: 0.85em;
+  font-weight: 200;
+}
+
+.todaysTimersTable .timer_actions {
+  padding-left: 1em;
+}
+
+.todaysTimersTable .timer_time,
+.todaysTimersTable .timer_actions {
+  width: 1em;
+}
+
+.topnavButton {
+  border: 1px solid black;
+  margin: 0 0.5em;
+}
+
+.editForm .formRow{
+  display: flex;
+  flex-direction: row;
+  padding: 0.5em 0;
+  align-items: center;
+}
+
+.editForm .formRow label {
+  padding-right: 0.5em;
+}
+.editForm .formRow input {
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 20px;
+  padding: 0.5em 1em;
+}
+
+.editForm .formRow.formCheckbox input {
+  flex-grow: 0;
+}
+
+.editForm .formRow.formCheckbox label {
+  flex-grow: 1;
+  padding: 0.5em 1em;
+}
+
+.timerListTable {
+  width: 100%;
+}
+
+.timerListTable tbody tr {
+  padding: 1.0em 0;
+}
+
+.timerListTable .timer_name {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.timerListTable .timer_name .timer_description {
+  font-weight: normal;
+}
+
+.timerListTable .timer_name .timer_description_extra {
+  font-weight: 200;
+  font-size: 0.8em;
+}
+
+.timerListTable .timer_date,
+.timerListTable .timer_time,
+.timerListTable .timer_actions {
+  width: 1em;
+  padding-left: 1em;
 }
 

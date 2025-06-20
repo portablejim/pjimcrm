@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import uuid
 from zoneinfo import ZoneInfo
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render
@@ -43,17 +43,48 @@ def client_detail(request, client_id):
 
 @login_required()
 def project_detail(request, client_id, project_id):
-    timer_status = json.dumps(get_running_timers())
     project_record = get_object_or_404(Project, pk=project_id)
-    return render(request, "pjimcrm/project_detail.html", {"project_record": project_record})
+    timers_not_invoiced = project_record.timesheetentry_set.filter(invoice_reference=None)
+    timers_invoiced = project_record.timesheetentry_set.exclude(invoice_reference=None)
+    return render(request, "pjimcrm/project_detail.html", {
+        "project_record": project_record,
+        "timer_list": timers_not_invoiced,
+        "timer_invoiced_list": timers_invoiced,
+    })
 
 @login_required()
 def project_create(request, client_id, project_id):
     return HttpResponse("Hello World. Project id:" + str(project_id))
 
 @login_required()
-def project_edit(request, client_id, project_id):
+def project_delete(request, client_id, project_id):
+    project_record = get_object_or_404(Project, pk=project_id)
+    if request.method == 'POST':
+        project_record.delete()
     return HttpResponse("Hello World. Project id:" + str(project_id))
+
+@login_required()
+def project_edit(request, client_id, project_id):
+    project_record = get_object_or_404(Project, pk=project_id)
+    if request.method == 'POST':
+        changed = False
+        if "name" in request.POST and request.POST["name"] != project_record.name:
+            project_record.name =  request.POST["name"]
+            changed = True
+        if "description" in request.POST and request.POST["description"] != project_record.description:
+            project_record.description =  request.POST["description"]
+            changed = True
+        if "is_active" in request.POST:
+            input_is_active = request.POST["is_active"] == "true"
+            project_record.is_active =  input_is_active
+            changed = True
+        
+        if changed:
+            project_record.save()
+        
+        return redirect("project_detail", client_id=client_id, project_id=project_id)
+    else:
+        return render(request, "pjimcrm/project_edit.html", {"project_record": project_record})
 
 @login_required()
 def project_timer_start(request, client_id, project_id):
@@ -222,4 +253,18 @@ def timer_current_stop(request):
                 return HttpResponse("OK")
         return HttpResponse("OK")
     return HttpResponse("Invalid request", status=418)
+
+@login_required()
+def timer_current_delete(request):
+    if request.method == 'POST' and 'id' in request.POST:
+        timesheet_record = get_object_or_404(TimesheetEntry, pk=request.POST["id"])
+        timesheet_record.delete()
+
+    if 'retUrl' in request.POST:
+        testFunc, testArgs, testKwargs = resolve(request.POST["retUrl"])
+        if testFunc is not None:
+            return HttpResponseRedirect(request.POST["retUrl"])
+        else:
+            return HttpResponse("OK")
+    return HttpResponse("OK")
 
