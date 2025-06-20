@@ -20,7 +20,7 @@
 {% block content %}
 <div class="atkinson-hyperlegible-next-regular">
     <h2>Timer</h2>
-    <div class="timerMain" data-running="{{ timer_status.running|yesno:"true,false" }}" data-timer="{{ timer_status }}">
+    <div class="timerMain" data-running="{{ timer_status_object.running|yesno:"true,false" }}" data-timer="{{ timer_status }}">
         <div class="running">
             <form class="timerRunningForm" method="post" action="{% url 'timer_stop' %}">
                 <div class="timerDisplayContainer fira-code-regular">
@@ -35,14 +35,14 @@
                     {% endspaceless %}
                 </div>
                 <div class="timerRow">
-                    <p class="timerClient">Client: <span class="timerClientName">{{ timer_status.timer.client_name }}</span></p>
+                    <p class="timerClient">Client: <span class="timerClientName">{{ timer_status_object.timer.client_name }}</span></p>
                 </div>
                 <div class="timerRow">
-                    <p class="timerProject">Project: <span class="timerProjectName">{{ timer_status.timer.project_name }}</span></p>
+                    <p class="timerProject">Project: <span class="timerProjectName">{{ timer_status_object.timer.project_name }}</span></p>
                 </div>
                 <div class="timerRow">
                     <label for="timerDescription">Description</label>
-                    <input id="timerRunningDescription" name="description" type="text" value="{{ timer_status.timer.description }}" />
+                    <input id="timerRunningDescription" name="description" class="timerInput" type="text" value="{{ timer_status_object.timer.description }}" />
                     <button class="buttonIconButton">
                         <svg class="icon buttonIcon" role="img" aria-label="Update" title="Update" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M500.3 0h-47.4a12 12 0 0 0 -12 12.6l4 82.8A247.4 247.4 0 0 0 256 8C119.3 8 7.9 119.5 8 256.2 8.1 393.1 119.1 504 256 504a247.1 247.1 0 0 0 166.2-63.9 12 12 0 0 0 .5-17.4l-34-34a12 12 0 0 0 -16.4-.6A176 176 0 1 1 402.1 157.8l-101.5-4.9a12 12 0 0 0 -12.6 12v47.4a12 12 0 0 0 12 12h200.3a12 12 0 0 0 12-12V12a12 12 0 0 0 -12-12z"/></svg>
                     </button>

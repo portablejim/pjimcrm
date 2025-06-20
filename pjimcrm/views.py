@@ -93,10 +93,11 @@ def invoice_build(request, client_id):
 
 @login_required()
 def timer_index(request):
-    timer_status = json.dumps(get_running_timers())
+    timer_status_object = get_running_timers()
+    timer_status = json.dumps(timer_status_object)
     projects = Project.objects.filter(is_active=True)
     lastest_project = TimesheetEntry.objects.filter(project__is_active=True).order_by("-modified_date","project__name").first().project
-    return render(request, "pjimcrm/timer.html", {"timer_status": timer_status, "project_list": projects, "latest_project_id": lastest_project.id})
+    return render(request, "pjimcrm/timer.html", {"timer_status": timer_status, "timer_status_object": timer_status_object, "project_list": projects, "latest_project_id": lastest_project.id})
 
 
 @login_required()

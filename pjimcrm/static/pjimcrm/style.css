@@ -295,6 +295,13 @@ nav .icon {
   background-color: rgba(0, 0, 0, 0.05);
 }
 
+.buttonIconButton {
+  background: none;
+  border: 1px solid black;
+  padding: 0.5em 1em;
+  margin-left: 0.5em;
+}
+
 .buttonIcon {
   display: block;
   height: 1em;
@@ -362,9 +369,14 @@ nav .icon {
   flex-grow: 1;
 }
 
+.timerRow .timerRunningDescription {
+  padding: 0.5em 0.2em;
+  flex-grow: 1;
+}
+
 .timerRow .timerClient,
 .timerRow .timerProject {
-  padding: 0.5em 0;
+  padding: 0.2em 0;
 }
 
 .timerRunningBannerRow {
@@ -435,6 +447,21 @@ nav .icon {
   color: white;
 }
 
+.timerDisplay {
+  text-align: center;
+  font-size: 1.2em;
+}
+
+.timerStopButton {
+  align-self: center;
+  margin: auto;
+  margin-top: 0.75em;
+  width: 100%;
+  padding: 0.75em 0.2em;
+  background-color: #A50021;
+  color: white;
+}
+
 @media screen and (min-width: 400px)
 {
   .rowSplit2 {
@@ -447,8 +474,19 @@ nav .icon {
     padding: 0;
   }
 
+  .timerDisplay {
+    font-size: 3em;
+  }
+
   .timerAddButton {
     width: 95%;
+  }
+}
+
+@media screen and (min-width: 500px)
+{
+  .timerDisplay {
+    font-size: 4em;
   }
 }
 
