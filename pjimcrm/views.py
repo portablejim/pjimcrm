@@ -1,5 +1,6 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 import uuid
+from zoneinfo import ZoneInfo
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
@@ -97,7 +98,41 @@ def timer_index(request):
     timer_status = json.dumps(timer_status_object)
     projects = Project.objects.filter(is_active=True)
     lastest_project = TimesheetEntry.objects.filter(project__is_active=True).order_by("-modified_date","project__name").first().project
-    return render(request, "pjimcrm/timer.html", {"timer_status": timer_status, "timer_status_object": timer_status_object, "project_list": projects, "latest_project_id": lastest_project.id})
+    day_start = datetime(timezone.now().year, timezone.now().month, timezone.now().day, tzinfo=ZoneInfo("Australia/NSW"))
+    todays_timers = TimesheetEntry.objects.filter(project__is_active=True, created_date__gte=day_start)
+    return render(request, "pjimcrm/timer.html", {
+        "timer_status": timer_status,
+        "timer_status_object": timer_status_object,
+        "project_list": projects,
+        "latest_project_id": lastest_project.id,
+        "timer_list": todays_timers,
+    })
+
+
+@login_required()
+def timer_detail(request, timer_id):
+    if request.method == 'POST' and 'id' in request.POST:
+        timesheet_record = get_object_or_404(TimesheetEntry, pk=request.POST['id'])
+        timesheet_record.target_user = request.user
+        if 'description' in request.POST and request.POST['description'] and len(request.POST['description']) > 1:
+            timesheet_record.description = request.POST['description']
+            timesheet_record.description_set = True
+            timesheet_record.save()
+        return HttpResponse("OK")
+    return HttpResponse("Invalid request", status=404)
+
+
+@login_required()
+def timer_restart(request, timer_id):
+    if request.method == 'POST' and 'id' in request.POST:
+        timesheet_record = get_object_or_404(TimesheetEntry, pk=request.POST['id'])
+        timesheet_record.target_user = request.user
+        if 'description' in request.POST and request.POST['description'] and len(request.POST['description']) > 1:
+            timesheet_record.description = request.POST['description']
+            timesheet_record.description_set = True
+            timesheet_record.save()
+        return HttpResponse("OK")
+    return HttpResponse("Invalid request", status=404)
 
 
 @login_required()

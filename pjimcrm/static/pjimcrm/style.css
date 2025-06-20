@@ -160,6 +160,7 @@ nav .icon {
 
 .content {
   padding: 0 1em;
+  overflow-y: scroll;
 }
 
 .topnav .icon {
