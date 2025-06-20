@@ -60,6 +60,34 @@
             </form>
         </div>
     </div>
+    <table class="pendingHoursList">
+        <thead>
+            <tr>
+                <th scope="col">Project</th>
+                <th class="hours_display" scope="col">Hours</th>
+            </tr>
+        </thead>
+    {% if pending_hours %}
+        <tbody>
+        {% for pending_record in pending_hours %}
+            <tr>
+                <th scope="row"><a href="{% url 'project_detail' pending_record.client.id pending_record.id %}">{{ pending_record.name }}</a></th>
+                <td class="hours_display fira-code-regular">{{ pending_record.hours_sum }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th scope="row">Total</th>
+                <td class="hours_display fira-code-regular">{{ total_pending_hours}}</td>
+            </tr>
+        </tfoot>
+    {% else %}
+        <tbody>
+            <tr><td>No pending records.</td></tr>
+        </tbody>
+    {% endif %}
+    </table>
     <h2>Invoices</h2>
     <table class="invoiceList">
     <thead>

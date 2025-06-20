@@ -1,10 +1,12 @@
+from datetime import timedelta
 import uuid
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render
 from django.urls import resolve
 from django.utils import timezone
+from django.db.models import Q, Sum
 import json
 
 from .models import Client, Project, Invoice, TimesheetEntry
@@ -19,14 +21,26 @@ def index(request):
 
 @login_required()
 def client_detail(request, client_id):
+    timer_status = json.dumps(get_running_timers())
     client_record = get_object_or_404(Client, pk=client_id)
     project_list = client_record.project_set.all()
-    invoices = Invoice.objects.filter(client_id=client_record).order_by("gen_date")
-    return render(request, "pjimcrm/client_detail.html", {"client_record": client_record, "project_list": project_list, "invoice_list": invoices})
+    pending_entries = Sum("timesheetentry__length_rounded", filter=Q(timesheetentry__is_invoiced=False))
+    pending_hours = client_record.project_set.annotate(hours_sum=pending_entries).filter(hours_sum__gt=timedelta())
+    total_pending_hours = pending_hours.aggregate(Sum("hours_sum"))["hours_sum__sum"]
+    invoices = client_record.invoice_set.order_by("gen_date")
+    return render(request, "pjimcrm/client_detail.html", {
+        "client_record": client_record,
+        "project_list": project_list,
+        "invoice_list": invoices,
+        "timer_status": timer_status,
+        "pending_hours": pending_hours,
+        "total_pending_hours": total_pending_hours
+        })
 
 
 @login_required()
 def project_detail(request, client_id, project_id):
+    timer_status = json.dumps(get_running_timers())
     project_record = get_object_or_404(Project, pk=project_id)
     return render(request, "pjimcrm/project_detail.html", {"project_record": project_record})
 
@@ -85,7 +99,7 @@ def timer_index(request):
 
 @login_required()
 def timer_current_get(request):
-    return HttpResponse("Hello World. Timesheet index.")
+    return JsonResponse(get_running_timers())
 
 
 @login_required()

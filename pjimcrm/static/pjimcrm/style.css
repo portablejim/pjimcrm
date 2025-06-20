@@ -247,15 +247,17 @@ nav .icon {
   padding: 0.5em 1em 0.5em 0;
 }
 
-.projectTable {
+.projectTable, .pendingHoursList {
   width: 100%;
 }
 
-.projectTable th {
+.projectTable th,
+.pendingHoursList th {
   text-align: left;
 }
 
-.projectTable tbody th {
+.projectTable tbody th,
+.pendingHoursList tbody th {
   font-weight: normal;
 }
 
@@ -263,9 +265,23 @@ nav .icon {
   width: 4em;
 }
 
-.projectTable a {
+.pendingHoursList .hours_display {
+  width: 1em;
+  text-align: right;
+}
+
+.pendingHoursList thead .hours_display {
+  text-align: left;
+}
+
+.projectTable a,
+.pendingHoursList a {
   display: inline-block;
   padding: 0.5em 1em 0.5em 0;
+}
+
+.pendingHoursList tfoot td {
+  font-weight: 600;
 }
 
 .flatButton {
