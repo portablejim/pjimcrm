@@ -25,7 +25,7 @@ SECRET_KEY = 'DUMMY'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['dcrm.pjim.me']
+ALLOWED_HOSTS = ['dcrm.pjim.me', 'localhost']
 
 
 # Application definition
