@@ -146,16 +146,21 @@ def timer_index(request):
     timer_status_object = get_running_timers()
     timer_status = json.dumps(timer_status_object)
     projects = Project.objects.filter(is_active=True)
-    latest_project = None
+    latest_project = projects.first()
     if len(TimesheetEntry.objects.all()) > 0:
         latest_project = TimesheetEntry.objects.filter(project__is_active=True).order_by("-modified_date","project__name").first().project
     day_start = datetime(timezone.now().year, timezone.now().month, timezone.now().day, tzinfo=ZoneInfo("Australia/NSW"))
     todays_timers = TimesheetEntry.objects.filter(project__is_active=True, created_date__gte=day_start)
+
+    latest_project_id = ""
+    if latest_project is not None:
+        latest_project_id = latest_project.id
+
     return render(request, "pjimcrm/timer.html", {
         "timer_status": timer_status,
         "timer_status_object": timer_status_object,
         "project_list": projects,
-        "latest_project_id": latest_project.id,
+        "latest_project_id": latest_project_id,
         "timer_list": todays_timers,
     })
 
