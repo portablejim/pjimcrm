@@ -2,8 +2,10 @@ import datetime
 
 from django.conf import settings
 from django.test import TestCase
+from django.test import Client as TestClient
 from django.urls import reverse
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 from .models import Client,Project,TimesheetEntry
 
@@ -69,5 +71,12 @@ class TimesheetModelTests(TestCase):
 
     def test_timer_index(self):
         response = self.client.get(reverse("timer_index"))
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(302, response.status_code)
+
+        test_client = TestClient()
+        test_user = User.objects.create_user("test")
+        test_client.force_login(user=test_user)
+
+        response = self.client.get(reverse("timer_index"))
+        self.assertEqual(302, response.status_code)
 
