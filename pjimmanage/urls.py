@@ -19,8 +19,10 @@ from django.urls import include, path, re_path
 from django.views.generic.base import RedirectView
 
 favicon_view = RedirectView.as_view(url='/static/favicon.ico', permanent=True)
+crm_view = RedirectView.as_view(url='/crm/')
 
 urlpatterns = [
+    path('', crm_view),
     re_path(r'^favicon\.ico$', favicon_view),
     path('admin/', admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
