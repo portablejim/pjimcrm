@@ -98,7 +98,10 @@ class TimesheetEntry(models.Model):
         return self.timestamp_started != None and self.timestamp_stopped is None
 
     def __str__(self):
-        return "Timesheet Entry" + self.description
+        if self.description_set:
+            return "Timesheet Entry: " + self.description
+        else:
+            return "Timesheet Entry [" + self.description + "]"
 
     def save(self, **kwargs):
         if self.timestamp_started is not None and self.timestamp_stopped is not None:
