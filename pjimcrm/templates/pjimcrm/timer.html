@@ -112,20 +112,22 @@
         <tr>
             <th class="timer_name" scope="row">
                 {% if timer_record.description_set %}
-                <span class="timer_description">{{ timer_record.description }}</span>
-                <span class="timer_description_extra">{{ timer_record.project.name }} - {{timer_record.project.client.name }}</span>
-                <a href="">{{ timer_record.name }}
-
+                <a href="{% url 'timer_detail' timer_record.id %}">
+                    <span class="timer_description">{{ timer_record.description }}</span>
+                    <span class="timer_description_extra">{{ timer_record.project.name }} - {{timer_record.project.client.name }}</span>
                 </a>
                 {% else %}
-                <a href="">{{ timer_record.name }}</a>
+                <a href="{% url 'timer_detail' timer_record.id %}">
+                    <span class="timer_description">({{ timer_record.project.name }})</span>
+                    <span class="timer_description_extra">{{timer_record.project.client.name }}</span>
+                </a>
                 {% endif %}
             </th>
             <td class="timer_time">
                 {{ timer_record.length_raw }}
             </td>
             <td class="timer_actions">
-                <form method="post" action="{% url 'project_timer_start' timer_record.project.client.id timer_record.project.id %}">
+                <form method="post" action="{% url 'timer_restart' timer_record.id %}">
                     <input type="hidden" name="retUrl" value="{{ request.get_full_path }}" />
                     {% csrf_token %}
                     <input class="flatButton disableOnRunning" type="submit" value="Restart" {% if timer_status_object.running %}disabled{% endif %} />

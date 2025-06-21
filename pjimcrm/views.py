@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render
-from django.urls import resolve
+from django.urls import resolve, reverse
 from django.utils import timezone
 from django.db.models import Q, Sum
 import json
@@ -121,7 +121,8 @@ def project_timer_start(request, client_id, project_id):
 @login_required()
 def project_timer_detail(request, client_id, project_id, timer_id):
     timesheet_record = get_object_or_404(TimesheetEntry, pk=timer_id)
-    return render(request, "pjimcrm/timesheet_project_detail.html", {"timesheet_record": timesheet_record, "client_id": client_id})
+    back_url = reverse('project_detail', kwargs={"client_id": client_id, "project_id": project_id})
+    return render(request, "pjimcrm/timesheet_project_detail.html", {"timesheet_record": timesheet_record, "client_id": client_id, "back_url": back_url})
 
 
 @login_required()
@@ -167,27 +168,32 @@ def timer_index(request):
 
 @login_required()
 def timer_detail(request, timer_id):
-    if request.method == 'POST' and 'id' in request.POST:
-        timesheet_record = get_object_or_404(TimesheetEntry, pk=request.POST['id'])
-        timesheet_record.target_user = request.user
-        if 'description' in request.POST and request.POST['description'] and len(request.POST['description']) > 1:
-            timesheet_record.description = request.POST['description']
-            timesheet_record.description_set = True
-            timesheet_record.save()
-        return HttpResponse("OK")
-    return HttpResponse("Invalid request", status=404)
+    timesheet_record = get_object_or_404(TimesheetEntry, pk=timer_id)
+    back_url = reverse('timer_index')
+    return render(request, "pjimcrm/timesheet_detail.html", {"timesheet_record": timesheet_record, "back_url": back_url})
 
 
 @login_required()
 def timer_restart(request, timer_id):
-    if request.method == 'POST' and 'id' in request.POST:
-        timesheet_record = get_object_or_404(TimesheetEntry, pk=request.POST['id'])
-        timesheet_record.target_user = request.user
-        if 'description' in request.POST and request.POST['description'] and len(request.POST['description']) > 1:
-            timesheet_record.description = request.POST['description']
-            timesheet_record.description_set = True
+    if request.method == 'POST':
+        timer_status = get_running_timers()
+        timesheet_record = get_object_or_404(TimesheetEntry, pk=timer_id)
+
+        # Only start if no existing timer.
+        if timer_status['running'] == False and timesheet_record.timestamp_started is None:
+            timesheet_record.target_user = request.user
+            if 'description' in request.POST and request.POST['description'] and len(request.POST['description']) > 1:
+                timesheet_record.description = request.POST['description']
+                timesheet_record.description_set = True
+            timesheet_record.timestamp_started = timezone.now()
             timesheet_record.save()
-        return HttpResponse("OK")
+
+        if 'retUrl' in request.POST:
+            testFunc, testArgs, testKwargs = resolve(request.POST["retUrl"])
+            if testFunc is not None:
+                return HttpResponseRedirect(request.POST["retUrl"])
+            else:
+                return HttpResponse("OK")
     return HttpResponse("Invalid request", status=404)
 
 

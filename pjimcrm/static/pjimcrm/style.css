@@ -514,10 +514,12 @@ nav .icon {
   width: 100%;
 }
 
-.todaysTimersTable .timer_name {
+.todaysTimersTable .timer_name a {
   display: flex;
   flex-direction: column;
   text-align: left;
+  text-decoration: none;
+  color: black;
 }
 
 .todaysTimersTable .timer_name .timer_description {
@@ -583,9 +585,6 @@ nav .icon {
   text-align: left;
   text-decoration: none;
   color: black;
-}
-
-.timerListTable .timer_name a {
 }
 
 .timerListTable .timer_name .timer_description {
