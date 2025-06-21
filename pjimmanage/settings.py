@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['dcrm.pjim.me', 'localhost']
 # Application definition
 
 INSTALLED_APPS = [
+    'pjimcrm.templatetags.pjimcrm_extras',
     'pjimcrm.apps.PjimcrmConfig',
     'django.contrib.admin',
     'django.contrib.auth',
