@@ -149,6 +149,7 @@
     {
         document.runningTimerDisplayUpdate = true;
         setInterval(updateTimerDisplay, 200);
+        setInterval(() => { fetchRunningTimerData( '{% url "timer_get" %}') }, 5000);
     }
     document.querySelectorAll('.timerMain')?.forEach(timerEl => {
         let updateDescriptionEl = timerEl.querySelector('.buttonIconButton');

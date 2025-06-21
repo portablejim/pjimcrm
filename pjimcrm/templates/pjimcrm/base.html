@@ -4,15 +4,15 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{% block page_title %}PJim CRM{% endblock %}</title>
-        <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}v={% file_modtime 'favicon.ico' %}" />
-        <link rel="icon" type="image/webp" href="{% static 'favicon.webp' %}v={% file_modtime 'favicon.webp' %}" />
-        <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}v={% file_modtime 'favicon.svg' %}" />
-        <link rel="manifest" href="{% static 'manifest.json' %}v={% file_modtime 'manifest.json' %}" />
+        <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}?v={% file_modtime 'favicon.ico' %}" />
+        <link rel="icon" type="image/webp" href="{% static 'favicon.webp' %}?v={% file_modtime 'favicon.webp' %}" />
+        <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}?v={% file_modtime 'favicon.svg' %}" />
+        <link rel="manifest" href="{% static 'manifest.json' %}?v={% file_modtime 'manifest.json' %}" />
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&family=Fira+Code:wght@300..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Overpass:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="{% static 'pjimcrm/style.css' %}?v={% file_modtime 'pjimcrm/style.css' %}">
-        <script type="application/javascript" src="{% static 'pjimcrm/common.js' %}v={% file_modtime 'pjimcrm/common.js' %}"></script>
+        <script type="application/javascript" src="{% static 'pjimcrm/common.js' %}?v={% file_modtime 'pjimcrm/common.js' %}"></script>
     </head>
     <body>
         <div class="wrapper">

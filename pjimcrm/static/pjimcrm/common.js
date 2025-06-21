@@ -39,8 +39,21 @@ function updateTimerDisplay() {
             timerEl.dataset.running = "false";
 
         }
-        //console.log({timerData, timer: timerData.timer, timestampStarted: timerData.timer.timestamp_started});
     })
+}
+
+function fetchRunningTimerData(initUrl) {
+    return fetch(initUrl).then(timerData => {
+        timerData.text().then(timerDataText => {
+            document.querySelectorAll('.timerMain').forEach(timerEl => {
+                if(timerEl.dataset.timer != timerDataText) {
+                    document.location.reload();
+                    return;
+                }
+                timerEl.dataset.timer = timerDataText;
+            });
+        });
+    });
 }
 
 function updateBannerTimerDisplay() {
@@ -120,7 +133,6 @@ function fetchBannerTimerData(initUrl) {
             });
         });
     });
-
 }
 
 function initBannerTimerDisplay(initUrl) {
