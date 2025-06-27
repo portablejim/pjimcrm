@@ -1,0 +1,18 @@
+{% extends "pjimcrm/base.html" %}
+{% block topnav %}{% endblock %}
+{% block nav %}{% endblock %}
+{% block content %}
+<div class="errorMessageOuter">
+    <div class="errorMessageInner">
+        <p class="errorMessage">{{ error_message }}</p>
+        <p class="closeButton">
+            <button id="backLink">Back</button>
+        </p>
+    </div>
+</div>
+<script type="application/javascript">
+document.getElementById("backLink").addEventListener("click", ev => {
+    history.back();
+})
+</script>
+{% endblock %}

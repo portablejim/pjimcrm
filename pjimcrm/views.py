@@ -9,9 +9,10 @@ from django.urls import resolve, reverse
 from django.utils import timezone
 from django.db.models import Q, Sum
 import json
+import re
 
 from .models import Client, Project, Invoice, TimesheetEntry
-from .utils import get_running_timers
+from .utils import get_running_timers,parse_timer_length
 
 # Create your views here.
 @login_required()
@@ -254,15 +255,27 @@ def timer_current_add(request):
 
 @login_required()
 def timer_current_update(request):
+    retUrl = ''
+    if 'retUrl' in request.POST:
+        retUrl = request.POST['retUrl']
+
     if request.method == 'POST' and 'id' in request.POST:
         timesheet_record = get_object_or_404(TimesheetEntry, pk=request.POST['id'])
         timesheet_record.target_user = request.user
+        timesheet_changed = False
         if 'description' in request.POST and request.POST['description'] and len(request.POST['description']) > 1:
+            timesheet_changed = True
             timesheet_record.description = request.POST['description']
             timesheet_record.description_set = True
+        if 'length_raw' in request.POST and request.POST['length_raw'] and len(request.POST['length_raw']) > 1:
+            length_raw = parse_timer_length(request.POST['length_raw'])
+            if length_raw is not None:
+                timesheet_record.length_raw = timedelta(seconds=length_raw)
+                timesheet_changed = True
+
+        if timesheet_changed: 
             timesheet_record.save()
-        if 'timesheetUpdateRaw' in request.POST and request.POST['timesheetUpdateRaw'] and len(request.POST['timesheetUpdateRaw']) > 1:
-            pass
+
         if 'retUrl' in request.POST:
             testFunc, testArgs, testKwargs = resolve(request.POST["retUrl"])
             if testFunc is not None:
@@ -270,10 +283,6 @@ def timer_current_update(request):
             else:
                 return HttpResponse("OK")
         return HttpResponse("OK")
-    else:
-        retUrl = ''
-        if 'retUrl' in request.POST:
-            retUrl = request.POST['retUrl']
     return render(request, "pjimcrm/error_message.html", {"error_message": "Invalid Request", "back_url": retUrl})
 
 

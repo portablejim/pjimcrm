@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 from .models import Client,Project,TimesheetEntry
+from . import utils
 
 # Create your tests here.
 
@@ -79,4 +80,14 @@ class TimesheetModelTests(TestCase):
 
         response = self.client.get(reverse("timer_index"))
         self.assertEqual(302, response.status_code)
+    
+    def test_parse_timesheet_length(self):
+        self.assertIsNone(utils.parse_timer_length(""))
+        self.assertIsNone(utils.parse_timer_length("1"))
+        self.assertIsNone(utils.parse_timer_length("01"))
+        self.assertIsNone(utils.parse_timer_length("0:01"))
+        self.assertEqual(1, utils.parse_timer_length("0:00:01"))
+        self.assertEqual(1, utils.parse_timer_length("00:00:01"))
+        self.assertEqual(61, utils.parse_timer_length("00:01:01"))
+        self.assertEqual(3661, utils.parse_timer_length("01:01:01"))
 
