@@ -603,3 +603,36 @@ nav .icon {
   padding-left: 1em;
 }
 
+.errorMessageOuter {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.errorMessageInner {
+  width: 100%;
+  text-align: center;
+}
+
+.errorMessageOuter .errorMessage {
+  margin: auto;
+  padding: 0;
+}
+
+.errorMessageOuter .closeButton {
+  margin: auto;
+  padding: 0;
+}
+
+.errorMessageOuter .closeButton button{
+  align-self: center;
+  margin: auto;
+  margin-top: 1em;
+  min-width: 50%;
+  padding: 0.75em 1.2em;
+  background-color: #A50021;
+  color: white;
+}
+

@@ -261,8 +261,20 @@ def timer_current_update(request):
             timesheet_record.description = request.POST['description']
             timesheet_record.description_set = True
             timesheet_record.save()
+        if 'timesheetUpdateRaw' in request.POST and request.POST['timesheetUpdateRaw'] and len(request.POST['timesheetUpdateRaw']) > 1:
+            pass
+        if 'retUrl' in request.POST:
+            testFunc, testArgs, testKwargs = resolve(request.POST["retUrl"])
+            if testFunc is not None:
+                return HttpResponseRedirect(request.POST["retUrl"])
+            else:
+                return HttpResponse("OK")
         return HttpResponse("OK")
-    return HttpResponse("Invalid request", status=404)
+    else:
+        retUrl = ''
+        if 'retUrl' in request.POST:
+            retUrl = request.POST['retUrl']
+    return render(request, "pjimcrm/error_message.html", {"error_message": "Invalid Request", "back_url": retUrl})
 
 
 @login_required()

@@ -33,7 +33,7 @@
 {% endblock %}
 {% block content %}
 <div class="atkinson-hyperlegible-next-regular">
-    <form method="post" action="{% url 'timer_update' }" class="editForm">
+    <form method="post" action="{% url 'timer_update' %}" class="editForm">
         <div class="formRow formText">
             <label for="timesheetDescription">Description:</label>
             <input id="timesheetDescription" type="text" name="description" value="{{ timesheet_record.description }}" />
@@ -44,8 +44,10 @@
         </div>
         <div class="formRow formText">
             <label for="timesheetLengthRaw">Length:</label>
-            <input id="timesheetLengthRaw" type="text" name="length_raw" value="{{ timesheet_record.length_raw }}" />
+            <input id="timesheetLengthRaw" class="inputTypeTimer" inputmode="numeric" type="text" name="length_raw" value="{{ timesheet_record.length_raw }}" />
         </div>
+        <input type="hidden" name="id" value="{{ timesheet_record.id }}" />
+        <input type="hidden" name="retUrl" value="{{ request.get_full_path }}" />
         {% csrf_token %}
         <div class="formRow formSubmit">
             <input type="submit" value="Save" />
