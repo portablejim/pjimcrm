@@ -1,9 +1,11 @@
-from django.conf import settings
-from django.db import models
-from datetime import date as date_mod, timedelta
-from django.utils import timezone
 import math
 import uuid
+from datetime import date as date_mod
+from datetime import timedelta
+
+from django.conf import settings
+from django.db import models
+
 
 # Create your models here.
 class Client(models.Model):
@@ -20,6 +22,7 @@ class Client(models.Model):
     def __str__(self):
         return self.name + "(" + self.abn + ")"
 
+
 class Project(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     name = models.CharField("Name")
@@ -30,6 +33,7 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name + "(" + self.client.name + ")"
+
 
 class Invoice(models.Model):
     invoice_num = models.CharField("Invoice #", unique=True)
@@ -51,6 +55,7 @@ class Invoice(models.Model):
             if self.client.payment_allowance > 0:
                 self.pay_date = self.gen_date + timedelta(days=self.client.payment_allowance)
         return super().save(**kwargs)
+
 
 class InvoiceLine(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
@@ -77,6 +82,7 @@ class InvoiceLine(models.Model):
 
         return super().save(**kwargs)
 
+
 class TimesheetEntry(models.Model):
     target_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     project = models.ForeignKey(Project, on_delete=models.RESTRICT)
@@ -100,8 +106,7 @@ class TimesheetEntry(models.Model):
     def __str__(self):
         if self.description_set:
             return "Timesheet Entry: " + self.description
-        else:
-            return "Timesheet Entry [" + self.description + "]"
+        return "Timesheet Entry [" + self.description + "]"
 
     def save(self, **kwargs):
         if self.timestamp_started is not None and self.timestamp_stopped is not None:
@@ -110,23 +115,20 @@ class TimesheetEntry(models.Model):
             if self.length_raw is not None and self.length_raw > timedelta():
                 new_timedelta += self.length_raw
             if self.timestamp_stopped > self.timestamp_started:
-                new_timedelta += (self.timestamp_stopped - self.timestamp_started)
-            
+                new_timedelta += self.timestamp_stopped - self.timestamp_started
+
             # Round to second.
             new_timedelta = timedelta(seconds=new_timedelta.seconds)
 
             self.length_raw = new_timedelta
 
             raw_minute_fraction = (new_timedelta.seconds / 60) / 15
-            rounded_minute_fraction= math.ceil(raw_minute_fraction)
+            rounded_minute_fraction = math.ceil(raw_minute_fraction)
             minutes_difference = (rounded_minute_fraction * 15) - (self.length_raw.seconds / 60)
             self.length_rounded = self.length_raw + timedelta(seconds=minutes_difference * 60)
-            
 
             self.timestamp_started_old = self.timestamp_started
             self.timestamp_stopped_old = self.timestamp_stopped
             self.timestamp_started = None
             self.timestamp_stopped = None
         return super().save(**kwargs)
-
-
