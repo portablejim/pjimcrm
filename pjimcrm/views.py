@@ -1,3 +1,5 @@
+"""PjimCRM Views."""
+
 import json
 import uuid
 from datetime import datetime, timedelta
@@ -5,7 +7,7 @@ from zoneinfo import ZoneInfo
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Sum
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import resolve, reverse
 from django.utils import timezone
@@ -16,13 +18,15 @@ from .utils import get_running_timers, parse_timer_length
 
 # Create your views here.
 @login_required()
-def index(request):
+def index(request: HttpRequest) -> HttpResponse:
+    """Display the main index page."""
     client_list = Client.objects.all().order_by("name")
     return render(request, "pjimcrm/home.html", {"client_list": client_list})
 
 
 @login_required()
-def client_detail(request, client_id):
+def client_detail(request: HttpRequest, client_id: int) -> HttpResponse:
+    """Show the detail for the specified client."""
     timer_status_object = get_running_timers()
     timer_status = json.dumps(timer_status_object)
     client_record = get_object_or_404(Client, pk=client_id)
@@ -119,7 +123,7 @@ def project_timer_start(request, client_id, project_id):
         timesheet_record = TimesheetEntry()
         timesheet_record.target_user = request.user
         timesheet_record.project = Project(id=project_id)
-        timesheet_record.description = uuid.uuid4()
+        timesheet_record.description = uuid.uuid4().hex
         timesheet_record.description_set = False
         timesheet_record.timestamp_started = timezone.now()
         timesheet_record.save()
