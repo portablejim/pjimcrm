@@ -81,7 +81,7 @@ docstring-code-line-length = "dynamic"
 max-line-length = 120
 disable = ["fixme", "too-many-arguments"]
 load-plugins = ["pylint_per_file_ignores", "pylint_django"]
-django-settings-module = "djpoe.settings"
+django-settings-module = "pjimmanage.local_settings"
 per-file-ignores = """
     /tests/:missing-function-docstring,assignment-from-no-return,not-context-manager,django-not-configured,imported-auth-user,missing-module-docstring
     /migrations/:invalid-name,missing-class-docstring,wrong-import-order
@@ -96,3 +96,33 @@ mypy_path = "./pjimmanage"
 [tool.django-stubs]
 django_settings_module = "pjimmanage.local_settings"
 ignore_missing_model_attributes = true
+
+[tool.poe.tasks.mypy]
+cmd = "mypy --install-types --check-untyped-defs ."
+
+[tool.poe.tasks.pylint]
+cmd = "pylint pjimcrm pjimmanage"
+
+[tool.poe.tasks.ruff]
+cmd = "ruff check ."
+
+[tool.poe.tasks.check]
+sequence = ["mypy", "pylint", "ruff"]
+
+[tool.poe.tasks.format]
+cmd = "ruff format ."
+
+[tool.poe.tasks.dev]
+help = "Run development server."
+cmd = "python ./pjimmanage/manage.py runserver 127.0.0.1:8001"
+
+[tool.poe.tasks.makemigrations]
+help = "Generate new migrations."
+cmd = "python ./pjimmanage/manage.py makemigrations"
+
+[tool.poe.tasks.migrate]
+help = "Migrate existing migrations."
+cmd = "python ./pjimmanage/manage.py migrate"
+
+[tool.poe.tasks.manage]
+cmd = "python ./pjimmanage/manage.py"
