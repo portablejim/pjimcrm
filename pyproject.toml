@@ -89,4 +89,10 @@ per-file-ignores = """
     manage.py:import-outside-toplevel
 """
 
+[tool.mypy]
+plugins = "mypy_django_plugin.main"
+mypy_path = "./pjimmanage"
 
+[tool.django-stubs]
+django_settings_module = "pjimmanage.local_settings"
+ignore_missing_model_attributes = true
