@@ -119,7 +119,7 @@ def project_edit(request, client_id, project_id):
 
 @login_required()
 def project_timer_start(request, client_id, project_id):
-    if request.method == "POST" and not get_running_timers()["running"]:
+    if request.method == "POST" and not get_running_timers().running:
         timesheet_record = TimesheetEntry()
         timesheet_record.target_user = request.user
         timesheet_record.project = Project(id=project_id)
@@ -129,8 +129,7 @@ def project_timer_start(request, client_id, project_id):
         timesheet_record.save()
 
     if "retUrl" in request.POST:
-        testFunc, testArgs, testKwargs = resolve(request.POST["retUrl"])
-        if testFunc is not None:
+        if resolve(request.POST["retUrl"]).func is not None:
             return HttpResponseRedirect(request.POST["retUrl"])
         return HttpResponse("OK")
     return HttpResponse("OK")
@@ -156,8 +155,7 @@ def invoice_detail(request, client_id, invoice_id):
 @login_required()
 def invoice_build(request, client_id):
     if "retUrl" in request.POST:
-        testFunc, testArgs, testKwargs = resolve(request.POST["retUrl"])
-        if testFunc is not None:
+        if resolve(request.POST["retUrl"]) is not None:
             return HttpResponseRedirect(request.POST["retUrl"])
         return HttpResponse("OK")
     return HttpResponse("OK")
@@ -170,12 +168,13 @@ def timer_index(request):
     projects = Project.objects.filter(is_active=True)
     latest_project = projects.first()
     if len(TimesheetEntry.objects.all()) > 0:
-        latest_project = (
+        latest_timesheet_entry = (
             TimesheetEntry.objects.filter(project__is_active=True)
             .order_by("-modified_date", "project__name")
             .first()
-            .project
         )
+        if latest_timesheet_entry is not None:
+            latest_project = latest_timesheet_entry.project
     day_start = datetime(
         timezone.now().year, timezone.now().month, timezone.now().day, tzinfo=ZoneInfo("Australia/NSW")
     )
@@ -183,7 +182,7 @@ def timer_index(request):
 
     latest_project_id = ""
     if latest_project is not None:
-        latest_project_id = latest_project.id
+        latest_project_id = str(latest_project.id)
 
     return render(
         request,
@@ -214,7 +213,7 @@ def timer_restart(request, timer_id):
         timesheet_record = get_object_or_404(TimesheetEntry, pk=timer_id)
 
         # Only start if no existing timer.
-        if timer_status["running"] == False and timesheet_record.timestamp_started is None:
+        if timer_status.running == False and timesheet_record.timestamp_started is None:
             timesheet_record.target_user = request.user
             if "description" in request.POST and request.POST["description"] and len(request.POST["description"]) > 1:
                 timesheet_record.description = request.POST["description"]
@@ -223,8 +222,7 @@ def timer_restart(request, timer_id):
             timesheet_record.save()
 
         if "retUrl" in request.POST:
-            testFunc, testArgs, testKwargs = resolve(request.POST["retUrl"])
-            if testFunc is not None:
+            if resolve(request.POST["retUrl"]) is not None:
                 return HttpResponseRedirect(request.POST["retUrl"])
             return HttpResponse("OK")
     return HttpResponse("Invalid request", status=404)
@@ -237,14 +235,14 @@ def timer_current_get(request):
 
 @login_required()
 def timer_current_add(request):
-    if request.method == "POST" and not get_running_timers()["running"]:
+    if request.method == "POST" and not get_running_timers().running:
         timesheet_record = TimesheetEntry()
         timesheet_record.target_user = request.user
         actionable = False
         if request.POST.get("project"):
             timesheet_record.project = Project(id=request.POST["project"])
 
-        timesheet_record.description = uuid.uuid4()
+        timesheet_record.description = uuid.uuid4().hex
         timesheet_record.description_set = False
         if "description" in request.POST and request.POST["description"] and len(request.POST["description"]) > 1:
             timesheet_record.description = request.POST["description"]
@@ -277,8 +275,7 @@ def timer_current_add(request):
             return HttpResponse("not actionable", status=418)
 
     if "retUrl" in request.POST:
-        testFunc, testArgs, testKwargs = resolve(request.POST["retUrl"])
-        if testFunc is not None:
+        if resolve(request.POST["retUrl"]) is not None:
             return HttpResponseRedirect(request.POST["retUrl"])
         return HttpResponse("OK")
     return HttpResponse("OK")
@@ -308,8 +305,7 @@ def timer_current_update(request):
             timesheet_record.save()
 
         if "retUrl" in request.POST:
-            testFunc, testArgs, testKwargs = resolve(request.POST["retUrl"])
-            if testFunc is not None:
+            if resolve(request.POST["retUrl"]) is not None:
                 return HttpResponseRedirect(request.POST["retUrl"])
             return HttpResponse("OK")
         return HttpResponse("OK")
@@ -327,10 +323,8 @@ def timer_current_stop(request):
         timesheet_record.timestamp_stopped = timezone.now()
         timesheet_record.save()
         if "retUrl" in request.POST:
-            testFunc, testArgs, testKwargs = resolve(request.POST["retUrl"])
-            if testFunc is not None:
+            if resolve(request.POST["retUrl"]).func is not None:
                 return HttpResponseRedirect(request.POST["retUrl"])
-                # return HttpResponse(request.POST["retUrl"])
             return HttpResponse("OK")
         return HttpResponse("OK")
     return HttpResponse("Invalid request", status=418)
@@ -343,8 +337,7 @@ def timer_current_delete(request):
         timesheet_record.delete()
 
     if "retUrl" in request.POST:
-        testFunc, testArgs, testKwargs = resolve(request.POST["retUrl"])
-        if testFunc is not None:
+        if resolve(request.POST["retUrl"]) is not None:
             return HttpResponseRedirect(request.POST["retUrl"])
         return HttpResponse("OK")
     return HttpResponse("OK")
