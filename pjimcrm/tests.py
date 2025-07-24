@@ -100,10 +100,10 @@ class TimesheetModelTests(TestCase):
             "On stopping again, the rounded length should be added.",
         )
         self.assertEqual(
-            time1, test_timesheet_entry.timestamp_started_old, "On stopping, the start time should be in the old fields."
+            time1, test_timesheet_entry.timestamp_started_old, "On stopping, the start time should be in the old fields." #pylint: disable:line-too-long
         )
         self.assertEqual(
-            time2, test_timesheet_entry.timestamp_stopped_old, "On stopping, the start time should be in the old fields."
+            time2, test_timesheet_entry.timestamp_stopped_old, "On stopping, the start time should be in the old fields." #pylint: disable:line-too-long
         )
 
         # Pretend to start it and stop it. A minute should cause the rounded value to tick over.
@@ -113,8 +113,8 @@ class TimesheetModelTests(TestCase):
         test_timesheet_entry.timestamp_stopped = time2
         test_timesheet_entry.save()
 
-        self.assertIsNone(test_timesheet_entry.timestamp_started, "On stopping, the started time should be cleared")
-        self.assertIsNone(test_timesheet_entry.timestamp_stopped, "On stopping, the stopped time should be cleared")
+        self.assertIsNone(test_timesheet_entry.timestamp_started, "On stopping, the started time should be cleared") #pylint: disable:line-too-long
+        self.assertIsNone(test_timesheet_entry.timestamp_stopped, "On stopping, the stopped time should be cleared") #pylint: disable:line-too-long
         self.assertEqual(
             datetime.timedelta(minutes=31),
             test_timesheet_entry.length_raw,
@@ -126,10 +126,10 @@ class TimesheetModelTests(TestCase):
             "On stopping again, the rounded length should be added.",
         )
         self.assertEqual(
-            time1, test_timesheet_entry.timestamp_started_old, "On stopping, the start time should be in the old fields."
+            time1, test_timesheet_entry.timestamp_started_old, "On stopping, the start time should be in the old fields." #pylint: disable:line-too-long
         )
         self.assertEqual(
-            time2, test_timesheet_entry.timestamp_stopped_old, "On stopping, the start time should be in the old fields."
+            time2, test_timesheet_entry.timestamp_stopped_old, "On stopping, the start time should be in the old fields." #pylint: disable:line-too-long
         )
 
     def test_timer_index(self) -> None:
