@@ -5,10 +5,13 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.db import models
+from mypy.types import AnyType
 
 
 # Create your models here.
 class Client(models.Model):
+    """A client."""
+
     name = models.CharField("Name", max_length=400)
     abn = models.CharField("ABN", max_length=15)
     email = models.EmailField("Email")
@@ -19,11 +22,14 @@ class Client(models.Model):
     created_date = models.DateTimeField("Created Date", auto_now_add=True)
     modified_date = models.DateTimeField("Modified Date", auto_now=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Return name, with ABN."""
         return self.name + "(" + self.abn + ")"
 
 
 class Project(models.Model):
+    """Project for a client."""
+
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     name = models.CharField("Name")
     description = models.CharField("Description")
@@ -31,11 +37,14 @@ class Project(models.Model):
     created_date = models.DateTimeField("Created Date", auto_now_add=True)
     modified_date = models.DateTimeField("Modified Date", auto_now=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Return project name, with name of client."""
         return self.name + "(" + self.client.name + ")"
 
 
 class Invoice(models.Model):
+    """Invoice for a client."""
+
     invoice_num = models.CharField("Invoice #", unique=True)
     client = models.ForeignKey(Client, on_delete=models.RESTRICT)
     invoice_uuid = models.UUIDField("UUID", default=uuid.uuid4())
@@ -46,10 +55,12 @@ class Invoice(models.Model):
     created_date = models.DateTimeField("Created Date", auto_now_add=True)
     modified_date = models.DateTimeField("Modified Date", auto_now=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Return invoice. num."""
         return "Invoice #" + self.invoice_num + " (" + self.client.name + ")"
 
-    def save(self, **kwargs):
+    def save(self, **kwargs) -> None:  # noqa: ANN003
+        """Actions on saving Invoice."""
         if self.pay_date is None:
             self.pay_date = self.gen_date
             if self.client.payment_allowance > 0:
@@ -58,6 +69,8 @@ class Invoice(models.Model):
 
 
 class InvoiceLine(models.Model):
+    """Invoice lines."""
+
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
     description = models.CharField("Description")
     description_extra = models.CharField("Extended Description")
@@ -67,10 +80,12 @@ class InvoiceLine(models.Model):
     created_date = models.DateTimeField("Created Date", auto_now_add=True)
     modified_date = models.DateTimeField("Modified Date", auto_now=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Return line item num."""
         return "Line Item #" + self.invoice.invoice_num + ": " + self.description
 
-    def save(self, **kwargs):
+    def save(self, **kwargs) -> None:  # noqa: ANN003
+        """Actions on saving invoice line."""
         if self.price is None:
             self.price = 0
             if self.invoice.client.pay_rate > 0:
@@ -84,6 +99,8 @@ class InvoiceLine(models.Model):
 
 
 class TimesheetEntry(models.Model):
+    """Timesheet entry."""
+
     target_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     project = models.ForeignKey(Project, on_delete=models.RESTRICT)
     description = models.CharField("Description")
@@ -100,15 +117,14 @@ class TimesheetEntry(models.Model):
     created_date = models.DateTimeField("Created Date", auto_now_add=True)
     modified_date = models.DateTimeField("Modified Date", auto_now=True)
 
-    def is_running(self):
-        return self.timestamp_started != None and self.timestamp_stopped is None
-
-    def __str__(self):
+    def __str__(self) -> str:
+        """Return timesheet entry num."""
         if self.description_set:
             return "Timesheet Entry: " + self.description
         return "Timesheet Entry [" + self.description + "]"
 
-    def save(self, **kwargs):
+    def save(self, **kwargs) -> None:  # noqa: ANN003
+        """Actions on saving timesheet entry."""
         if self.timestamp_started is not None and self.timestamp_stopped is not None:
             # Both timestamp fields set.
             new_timedelta = timedelta()
@@ -132,3 +148,7 @@ class TimesheetEntry(models.Model):
             self.timestamp_started = None
             self.timestamp_stopped = None
         return super().save(**kwargs)
+
+    def is_running(self) -> bool:
+        """Return if timer is running."""
+        return self.timestamp_started is not None and self.timestamp_stopped is None

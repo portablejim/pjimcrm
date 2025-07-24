@@ -1,3 +1,5 @@
+"""Utility Template Tags."""
+
 import os
 from datetime import datetime
 
@@ -9,6 +11,7 @@ register = template.Library()
 
 @register.simple_tag
 def file_modtime(target_file):
+    """Return the modified time of the passed in file."""
     result = finders.find(target_file)
     if result is None:
         return ''
