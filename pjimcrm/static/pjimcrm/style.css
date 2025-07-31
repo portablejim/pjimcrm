@@ -636,3 +636,29 @@ nav .icon {
   color: white;
 }
 
+.invoiceLineListTable {
+    width: 100%;
+}
+
+.invoiceLineListTable td {
+   vertical-align: baseline;
+}
+
+.invoiceLineListTable td.invoiceLineHours {
+    width: 4em;
+    text-align: right;
+}
+
+.invoiceLineListTable td.invoiceLineTotal {
+    width: 4em;
+    text-align: right;
+}
+
+.ilDescriptionMain {
+  padding: 0;
+}
+
+.ilDescriptionExtra {
+  padding: 0;
+}
+

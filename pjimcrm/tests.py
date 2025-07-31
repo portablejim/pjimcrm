@@ -3,7 +3,7 @@ import datetime
 
 from django.contrib.auth.models import User
 from django.test import Client as TestClient
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.utils import timezone
 
@@ -15,6 +15,9 @@ from .models import Client, Project, TimesheetEntry
 
 class TimesheetModelTests(TestCase):
     """Main tests."""
+
+    def setUp(self):
+        self.factory = RequestFactory()
 
     def test_auto_calculate_length(self) -> None:
         """Test the length is calculated correctly."""
@@ -152,3 +155,50 @@ class TimesheetModelTests(TestCase):
         self.assertEqual(1, utils.parse_timer_length("00:00:01"))
         self.assertEqual(61, utils.parse_timer_length("00:01:01"))
         self.assertEqual(3661, utils.parse_timer_length("01:01:01"))
+
+    def test_generate_invoice(self) -> None:
+        """Test the invoice generation works."""
+        time1 = timezone.now() + datetime.timedelta(minutes=-20)
+        time2 = timezone.now() + datetime.timedelta(minutes=-5)
+
+        target_client = Client(
+            name="Test",
+            abn="86059194368",
+            address="Test St",
+            email="test@example.com",
+            payment_allowance=10,
+            pay_rate=10,
+            payment_terms="Test Payment terms",
+        )
+        target_client.save()
+
+        test_project1 = Project(client=target_client, name="Project Name 1", description="Project Description 1")
+        test_project1.save()
+        test_project2 = Project(client=target_client, name="Project Name 2", description="Project Description 2")
+        test_project2.save()
+
+        # Start a timer.
+        test_timesheet_entry1 = TimesheetEntry(
+            project=test_project1, length_rounded=datetime.timedelta(minutes=1), description="Test 1", description_set=True, is_invoiced=False
+        )
+        test_timesheet_entry1.save()
+        test_timesheet_entry2 = TimesheetEntry(
+            project=test_project1, length_rounded=datetime.timedelta(minutes=2), description="Test 2", description_set=True, is_invoiced=False
+        )
+        test_timesheet_entry2.save()
+        test_timesheet_entry3 = TimesheetEntry(
+            project=test_project2, length_rounded=datetime.timedelta(minutes=4), description="Test 3", description_set=True, is_invoiced=False
+        )
+        test_timesheet_entry3.save()
+
+        test_client = TestClient()
+        test_user = User.objects.create_user("test")
+        test_client.force_login(user=test_user)
+
+        test_client.get(reverse("invoice_build", args=[int(target_client.pk)]))
+
+        test_timesheet_entry1 = TimesheetEntry.objects.get(pk=target_client.pk)
+
+        self.assertEqual(True, test_timesheet_entry1.is_invoiced)
+
+

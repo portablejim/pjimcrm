@@ -1,6 +1,7 @@
 """PjimCRM Views."""
 
 import json
+import logging
 import uuid
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
@@ -12,7 +13,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import resolve, reverse
 from django.utils import timezone
 
-from .models import Client, Invoice, Project, TimesheetEntry
+from .models import Client, Invoice, Project, TimesheetEntry, InvoiceLine
 from .utils import get_running_timers, parse_timer_length
 
 
@@ -28,7 +29,7 @@ def index(request: HttpRequest) -> HttpResponse:
 def client_detail(request: HttpRequest, client_id: int) -> HttpResponse:
     """Show the detail for the specified client."""
     timer_status_object = get_running_timers()
-    timer_status = json.dumps(timer_status_object)
+    timer_status = json.dumps(timer_status_object, default=vars)
     client_record = get_object_or_404(Client, pk=client_id)
     project_list = client_record.project_set.filter(is_active=True)
     pending_entries = Sum("timesheetentry__length_rounded", filter=Q(timesheetentry__is_invoiced=False))
@@ -154,6 +155,43 @@ def invoice_detail(request, client_id, invoice_id):
 
 @login_required()
 def invoice_build(request, client_id):
+    target_client = get_object_or_404(Client, pk=client_id)
+    project_ids = []
+    uninvoiced_timesheets = TimesheetEntry.objects.filter(is_invoiced=False)
+
+    if uninvoiced_timesheets.count() > 0:
+        # Find invoice num.
+        date_str_long = datetime.today().isoformat()
+        date_str = date_str_long[0:4] + date_str_long[5:7] + date_str_long[8:10]
+        invoice_count = 1
+        candidate_invoice_num = date_str+str(invoice_count)
+        matching_invoice_list = Invoice.objects.filter(invoice_num=candidate_invoice_num)
+        while matching_invoice_list.count() > 0:
+            invoice_count += 1
+            candidate_invoice_num = date_str + str(invoice_count)
+            matching_invoice_list = Invoice.objects.filter(invoice_num=candidate_invoice_num)
+
+        new_invoice = Invoice(invoice_num=candidate_invoice_num, client=target_client, gen_date=datetime.today(), payment_terms=target_client.payment_terms)
+        new_invoice.save()
+
+        for target_timesheet in uninvoiced_timesheets:
+            if target_timesheet.project is not None and target_timesheet.project.id is not None and target_timesheet.project.id not in project_ids:
+                project_ids.append(target_timesheet.project.id)
+        target_projects = Project.objects.filter(client__id=client_id, id__in=project_ids)
+        for target_project in target_projects:
+            total_time = timedelta(seconds=0)
+            target_project_timesheets = TimesheetEntry.objects.filter(project=target_project, is_invoiced=False)
+            for target_project_timesheet in target_project_timesheets:
+                total_time += target_project_timesheet.length_rounded
+
+            total_hours = total_time.seconds / (60*60)
+            new_invoice_line = InvoiceLine(invoice=new_invoice, description=target_project.name, description_extra=target_project.description, price=target_project.client.pay_rate, quantity=total_hours)
+            new_invoice_line.save()
+            for target_project_timesheet in target_project_timesheets:
+                target_project_timesheet.invoice_reference = new_invoice
+                target_project_timesheet.is_invoiced = True
+                target_project_timesheet.save()
+
     if "retUrl" in request.POST:
         if resolve(request.POST["retUrl"]) is not None:
             return HttpResponseRedirect(request.POST["retUrl"])

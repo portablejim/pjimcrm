@@ -1,3 +1,4 @@
+import decimal
 import math
 import uuid
 from datetime import date as date_mod
@@ -93,7 +94,7 @@ class InvoiceLine(models.Model):
         if self.quantity is None:
             self.quantity = 0
 
-        self.total = self.price * self.quantity
+        self.total = decimal.Decimal(self.price) * decimal.Decimal(self.quantity)
 
         return super().save(**kwargs)
 
