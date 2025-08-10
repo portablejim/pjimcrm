@@ -154,6 +154,15 @@ def invoice_detail(request, client_id, invoice_id):
 
 
 @login_required()
+def invoice_pdf(request, client_id, invoice_id):
+    invoice_record = get_object_or_404(Invoice, pk=invoice_id)
+    invoice_total = 0
+    for invoice_line in invoice_record.invoiceline_set.all():
+        invoice_total += invoice_line.total
+    return render(request, "pjimcrm/invoice_pdf.html", {"invoice_record": invoice_record, "client_id": client_id, 'invoice_total': invoice_total})
+
+
+@login_required()
 def invoice_build(request, client_id):
     target_client = get_object_or_404(Client, pk=client_id)
     project_ids = []

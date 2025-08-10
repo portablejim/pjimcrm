@@ -1,0 +1,170 @@
+{% load pjimcrm_extras %}{% load static %}<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title></title>
+        <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}?v={% file_modtime 'favicon.ico' %}" />
+        <link rel="icon" type="image/webp" href="{% static 'favicon.webp' %}?v={% file_modtime 'favicon.webp' %}" />
+        <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}?v={% file_modtime 'favicon.svg' %}" />
+        <link rel="manifest" href="{% static 'manifest.json' %}?v={% file_modtime 'manifest.json' %}" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&family=Fira+Code:wght@300..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Overpass:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'pjimcrm/style.css' %}?v={% file_modtime 'pjimcrm/style.css' %}">
+        <style>
+            .invoicePdf .headingRow .invoiceHeading {
+                display: flex;
+                flex-direction: row-reverse;
+                align-items: center;
+                justify-content: stretch;
+            }
+            .invoicePdf h1 {
+                margin: 0;
+            }
+            .invoicePdf h2 {
+                flex-grow: 1;
+                font-size: 2.5em;
+                margin: 0;
+            }
+            .invoicePdf .invoiceDetails {
+                display: flex;
+                flex-wrap: wrap;
+            }
+            .invoicePdf .invoiceDetails p {
+                margin: 0.5em 0;
+            }
+            .invoicePdf em {
+                font-weight: bold;
+                font-style: normal;
+            }
+            .invoicePdf .number {
+                font-family: "Fira Code", monospace;
+                font-optical-sizing: auto;
+                font-weight: 400;
+                font-style: normal;
+            }
+            .invoicePdf .myDetails {
+                width: 50%;
+            }
+            .invoicePdf .paymentDetails {
+                width: 25%;
+            }
+            .invoicePdf .invoiceRecordDetails {
+                width: 25%;
+            }
+            .invoicePdf .clientDetails {
+                width: 50%;
+            }
+            .invoicePdf .invoiceTerms {
+                width: 50%;
+            }
+            .invoicePdf .invoiceLines {
+                width: 100%;
+            }
+
+            .invoicePdf .invoiceLineRate,
+            .invoicePdf .invoiceLineHours,
+            .invoicePdf .invoiceLineTotal {
+                text-align: right;
+                border-left: rgba(0, 0, 0, 0.2) solid 1px;
+            }
+            .invoicePdf .invoiceLineRate {
+                width: 100px;
+            }
+            .invoicePdf .invoiceLineHours {
+                width: 100px;
+            }
+            .invoicePdf .invoiceLineTotal {
+                width: 100px;
+            }
+
+            .invoicePdf .invoiceLines td {
+                vertical-align: baseline;
+            }
+
+            .invoicePdf thead tr,
+            .invoicePdf thead th,
+            .invoicePdf tfoot th,
+            .invoicePdf tfoot td {
+                border-bottom: rgba(0, 0, 0, 1) solid 1px;
+                border-top: rgba(0, 0, 0, 1) solid 1px;
+            }
+
+            .invoicePdf tfoot th {
+                text-align: left;
+            }
+
+            .invoicePdf tfoot td {
+                text-align: right;
+            }
+        </style>
+        <script type="application/javascript" src="{% static 'pjimcrm/common.js' %}?v={% file_modtime 'pjimcrm/common.js' %}"></script>
+    </head>
+    <body class="invoicePdf noto-sans-regular">
+        <div class="headingRow overpass-regular">
+            <div class="invoiceHeading">
+                <h1>Invoice</h1>
+                <h2>(NAME)</h2>
+            </div>
+        </div>
+        <div class="invoiceDetails">
+            <div class="myDetails">
+                <p class="abn">ABN: <span class="number">(ABN)</span></p>
+                <p class="address">(ADDRESS1) <br>(ADDRESS2)</p>
+                <p class="email"><a href="mailto:">(EMAIL)</a></p>
+            </div>
+            <div class="paymentDetails">
+                <p><em>Payment Details</em></p>
+                <p><em>BSB:</em> <span class="number">(BSB)</span></p>
+                <p><em>Acc #:</em> <span class="number">(ACCOUNTNUMBER)</span></p>
+            </div>
+            <div class="invoiceRecordDetails">
+                <p><em>Invoice #:</em> {{ invoice_record.invoice_num }}</p>
+                <p><em>Date:</em> {{ invoice_record.gen_date }}</p>
+                <p><em>Due Date:</em> {{ invoice_record.pay_date }}</p>
+            </div>
+            <div class="clientDetails">
+                <p><em>To:</em></p>
+                <p>{{ invoice_record.client.name }}</p>
+                <p><em>ABN:</em> <span class="number">{{ invoice_record.client.abn }}</span></p>
+                <p>{{ invoice_record.client.email }}</p>
+            </div>
+            <div class="invoiceTerms">
+                <p><em>Terms:</em></p>
+                <p>{{ invoice_record.payment_terms }}</p>
+            </div>
+        </div>
+        <div class="invoiceLinesOuter">
+            <table class="invoiceLines">
+                <thead>
+                    <tr>
+                        <th scope="col" class="invoiceLineDescription">Description</th>
+                        <th scope="col" class="invoiceLineRate">Rate / hr</th>
+                        <th scope="col" class="invoiceLineHours">Hours</th>
+                        <th scope="col" class="invoiceLineTotal">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for invoice_line in invoice_record.invoiceline_set.all %}
+                <tr>
+                    <td class="invoiceLineDescription">
+                        <p class="ilDescriptionMain">{{ invoice_line.description }}</p>
+                        <p class="ilDescriptionExtra noto-sans-light">{{ invoice_line.description_extra }}</p>
+                    </td>
+                    <td class="invoiceLineRate">$ <span>{{ invoice_line.price }}</span></td>
+                    <td class="invoiceLineHours">{{ invoice_line.quantity | floatformat:2 }}</td>
+                    <td class="invoiceLineTotal">$ <span>{{ invoice_line.total }}</span></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th scope="row" colspan="3">Total (includes $0 GST)</th>
+                        <td>$ {{ invoice_total }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </body>
+</html>
