@@ -25,6 +25,7 @@ SECRET_KEY = "DUMMY"
 DEBUG = True
 
 ALLOWED_HOSTS = ["dcrm.pjim.me", "localhost"]
+CSRF_TRUSTED_ORIGINS = ["https://dcrm.pjim.me"]
 
 
 # Application definition
