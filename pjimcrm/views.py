@@ -223,7 +223,7 @@ def timer_index(request):
         if latest_timesheet_entry is not None:
             latest_project = latest_timesheet_entry.project
     day_start = datetime(
-        timezone.now().year, timezone.now().month, timezone.now().day, tzinfo=ZoneInfo("Australia/NSW")
+        timezone.now().year, timezone.now().month, timezone.now().day, tzinfo=ZoneInfo("Australia/Sydney")
     )
     todays_timers = TimesheetEntry.objects.filter(project__is_active=True, created_date__gte=day_start)
 
