@@ -211,7 +211,7 @@ def invoice_build(request, client_id):
 @login_required()
 def timer_index(request):
     timer_status_object = get_running_timers()
-    timer_status = json.dumps(timer_status_object)
+    timer_status = json.dumps(timer_status_object.for_json()).replace('%', '%25').replace('"', '%22')
     projects = Project.objects.filter(is_active=True)
     latest_project = projects.first()
     if len(TimesheetEntry.objects.all()) > 0:
@@ -277,7 +277,7 @@ def timer_restart(request, timer_id):
 
 @login_required()
 def timer_current_get(request):
-    return JsonResponse(get_running_timers())
+    return JsonResponse(get_running_timers().for_json())
 
 
 @login_required()

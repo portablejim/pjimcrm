@@ -18,10 +18,32 @@ class TimerRecord:
         self.length_raw = timer.length_raw.total_seconds(),
         self.timestamp_started = timestamp_started_str
 
+    def for_json(self):
+        return {
+            "id": self.id,
+            "client_name": self.client_name,
+            "project_name": self.project_name,
+            "description": self.description,
+            "description_set": self.description_set,
+            "length_raw": self.length_raw,
+            "timestamp_started": self.timestamp_started,
+        }
+
 class TimesheetEntryCurrent:
     def __init__(self, running: bool, timer: TimerRecord | None):
         self.running = running
         self.timer = timer
+
+    def for_json(self):
+        if self.timer is None:
+            return {
+                "running": self.running,
+            }
+
+        return {
+            "running": self.running,
+            "timer": self.timer.for_json(),
+        }
 
 
 def get_running_timers() -> TimesheetEntryCurrent:

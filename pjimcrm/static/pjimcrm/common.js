@@ -1,6 +1,6 @@
 function updateTimerDisplay() {
     document.querySelectorAll('.timerMain').forEach(timerEl => {
-        let timerData = JSON.parse(timerEl.dataset.timer);
+        let timerData = JSON.parse(decodeURIComponent(timerEl.dataset.timer));
         if(timerData && timerData.running && timerData.timer && timerData.timer.timestamp_started)
         {
             timerEl.dataset.running = "true";
@@ -46,7 +46,8 @@ function fetchRunningTimerData(initUrl) {
     return fetch(initUrl).then(timerData => {
         timerData.text().then(timerDataText => {
             document.querySelectorAll('.timerMain').forEach(timerEl => {
-                if(timerEl.dataset.timer != timerDataText) {
+                let timerOldData = timerEl.dataset.timer.replaceAll('%22', '"').replaceAll('%25', '%')
+                if(timerOldData !== timerDataText) {
                     document.location.reload();
                     return;
                 }
