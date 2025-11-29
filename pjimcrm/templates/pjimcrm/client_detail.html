@@ -111,7 +111,7 @@
             <tr>
                 <th scope="row"><a href="{% url 'invoice_detail' client_record.id invoice_record.id %}"># {{ invoice_record.invoice_num }}</a></th>
                 <td>{{ invoice_record.pay_date|date }}</td>
-                {% if invoice_record.paid %}
+                {% if invoice_record.is_paid %}
                     <td>Y</td>
                 {% else %}
                     <td>N</td>
