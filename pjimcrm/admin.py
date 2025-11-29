@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Client, Invoice, InvoiceLine, Project, TimesheetEntry
+from .models import Client, Invoice, InvoiceLine, Project, TimesheetEntry, PayToDetails
 
 
 class TimesheetEntryInline(admin.StackedInline):
@@ -37,3 +37,4 @@ admin.site.register(Project, ProjectAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(InvoiceLine)
 admin.site.register(TimesheetEntry)
+admin.site.register(PayToDetails)

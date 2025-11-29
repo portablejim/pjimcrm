@@ -42,6 +42,26 @@ class Project(models.Model):
         """Return project name, with name of client."""
         return self.name + "(" + self.client.name + ")"
 
+class PayToDetails(models.Model):
+    """Details about own business."""
+
+    name = models.CharField("Name")
+    recipient_name = models.CharField("Recipient Name", blank=True)
+    abn = models.CharField("ABN", blank=True, default="")
+    email = models.CharField("Email", blank=True, default="")
+    address = models.TextField("Address", blank=True, default="")
+    bsb = models.CharField("BSB", blank=True, default="")
+    account_number = models.CharField("Account Number", blank=True, default="")
+    weight = models.IntegerField("Weight", default=0)
+
+    def __str__(self) -> str:
+        """Return project name, with name of client."""
+        return self.name 
+
+def default_pay_to():
+    """Return a default PayTo record."""
+    return PayToDetails.objects.get_or_create(name="Default")[0].id
+
 
 class Invoice(models.Model):
     """Invoice for a client."""
@@ -55,6 +75,7 @@ class Invoice(models.Model):
     is_paid = models.BooleanField("Paid", default=False)
     created_date = models.DateTimeField("Created Date", auto_now_add=True)
     modified_date = models.DateTimeField("Modified Date", auto_now=True)
+    pay_to = models.ForeignKey(PayToDetails, on_delete=models.RESTRICT, default=default_pay_to)
 
     def __str__(self) -> str:
         """Return invoice. num."""
