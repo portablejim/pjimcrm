@@ -6,16 +6,18 @@ import re
 from .models import TimesheetEntry
 
 class TimerRecord:
+    description = ""
+
     def __init__(self, timer: TimesheetEntry):
         timestamp_started_str = ""
         if isinstance(timer.timestamp_started, datetime.datetime):
             timestamp_started_str = timer.timestamp_started.isoformat()
         self.id = timer.id
-        self.client_name = timer.project.client.name,
-        self.project_name = timer.project.name,
-        self.description = timer.description,
-        self.description_set = timer.description_set,
-        self.length_raw = timer.length_raw.total_seconds(),
+        self.client_name = timer.project.client.name
+        self.project_name = timer.project.name
+        self.description = timer.description
+        self.description_set = timer.description_set
+        self.length_raw = timer.length_raw.total_seconds()
         self.timestamp_started = timestamp_started_str
 
     def for_json(self):
