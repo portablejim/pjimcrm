@@ -105,19 +105,19 @@
         <div class="headingRow overpass-regular">
             <div class="invoiceHeading">
                 <h1>Invoice</h1>
-                <h2>(NAME)</h2>
+                <h2>{{ invoice_record.pay_to.recipient_name }}</h2>
             </div>
         </div>
         <div class="invoiceDetails">
             <div class="myDetails">
-                <p class="abn">ABN: <span class="number">(ABN)</span></p>
-                <p class="address">(ADDRESS1) <br>(ADDRESS2)</p>
-                <p class="email"><a href="mailto:">(EMAIL)</a></p>
+                <p class="abn">ABN: <span class="number">{{ invoice_record.pay_to.abn }}</span></p>
+                <p class="address">{{ invoice_record.pay_to.address | linebreaks }}</p>
+                <p class="email"><a href="mailto:{{ invoice_record.pay_to.email }}">{{ invoice_record.pay_to.email }}</a></p>
             </div>
             <div class="paymentDetails">
                 <p><em>Payment Details</em></p>
-                <p><em>BSB:</em> <span class="number">(BSB)</span></p>
-                <p><em>Acc #:</em> <span class="number">(ACCOUNTNUMBER)</span></p>
+                <p><em>BSB:</em> <span class="number">{{ invoice_record.pay_to.bsb }}</span></p>
+                <p><em>Acc #:</em> <span class="number">{{ invoice_record.pay_to.account_number }}</span></p>
             </div>
             <div class="invoiceRecordDetails">
                 <p><em>Invoice #:</em> {{ invoice_record.invoice_num }}</p>
